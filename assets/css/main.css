@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+/*
+
+light purple #AC82FF
+*/
+body {
+    @apply bg-secondary;
+    font-family: "DynaPuff";
+}
