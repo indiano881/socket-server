@@ -2,11 +2,10 @@
   <div>
     <NuxtLayout>
       <NuxtPage /> 
-    </NuxtLayout> 
-    <h1 class="text-2xl font-bold text-red-200">My first nuxt</h1>
+    </NuxtLayout>
     <!--DONT REMOVE IS GOOD FOR SEO AND ACCESIBILITY-->
     <NuxtRouteAnnouncer />
-  
+   
   </div>
 </template>
 <script setup lang="ts">

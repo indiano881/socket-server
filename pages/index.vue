@@ -1,3 +1,5 @@
 <template lang="pug">
-    h1 i am the index.vue file
+  div
+    h1(class="text-8xl font-bold text-red-200") HOME PAGE
+    
 </template>
