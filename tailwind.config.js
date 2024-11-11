@@ -16,10 +16,12 @@ export default {
         video: '16 / 9',
       },
       colors: {
-        'primary': '#756680',
-        'secondary': '#DB8CFF',
+        'primary': '#362C28',
+        'greynav': '#362C28',
+        'secondary': '#AF2BBF', //DB8CFF lighter variant
         'accent': '#9BFF4D',
-        'mild-yellow': "#FFF14D"
+        'mild-yellow': "#FFF14D",
+        "grey-hb": "#756680"
       },
       fontFamily: {
         dynapuff: ['DynaPuff', 'sans-serif'],
@@ -45,8 +47,8 @@ export default {
           }
         },
         '.t2': {
-          fontSize: '1.25rem', // Mobile font size (20px)
-          lineHeight: '1.75rem',
+          fontSize: '2rem', // Mobile font size (20px)
+          lineHeight: '2.25rem',
           fontWeight: '600', // Semi-bold
           '@screen lg': {
             fontSize: '3.5rem', // Desktop font size (24px)
@@ -54,21 +56,21 @@ export default {
           }
         },
         '.p1': {
-          fontSize: '0.875rem', // Mobile font size (14px)
-          lineHeight: '1.25rem',
+          fontSize: '1.5rem', // Mobile font size (30px)
+          lineHeight: '2.25rem',
+          fontWeight: 'regular',
           '@screen lg': {
-            fontSize: '2rem', // Desktop font size (16px)
-            lineHeight: '2.5rem',
-          }
-        },
+            fontSize: '3rem', // Desktop font size (36px)
+            lineHeight: '3.5rem',
+          }},
         '.p2': {
-          fontSize: '0.75rem', // Mobile font size (12px)
-          lineHeight: '1rem',
+          fontSize: '1.275rem', // Mobile font size (30px)
+          lineHeight: '2.25rem',
+          fontWeight: 'normal',
           '@screen lg': {
-            fontSize: '0.875rem', // Desktop font size (14px)
-            lineHeight: '2.25rem',
-          }
-        }
+            fontSize: '2.25rem', // Desktop font size (36px)
+            lineHeight: '3.5rem',
+          }}
       });
     }
   ]

@@ -45,10 +45,15 @@ export default {
     <transition name="fade">
       <nav v-show="menuOpen" class="nav" :class="{ 'sp-menu': buttonShow }">
         <ul class="flex flex-col md:flex-row">
-          <li class="p-2"><NuxtLink href="/" @click="closeMenu">Home</NuxtLink></li>
-          <li class="p-2"><NuxtLink href="/about" @click="closeMenu">About</NuxtLink></li>
-          <li class="p-2"><NuxtLink href="/colors" @click="closeMenu">Colors</NuxtLink></li>
-          <li class="p-2"><NuxtLink href="/textsize" @click="closeMenu">Textsize</NuxtLink></li>
+          <li class="p1 p-2"><NuxtLink href="/" @click="closeMenu">What is Nuxtermind?</NuxtLink></li>
+          <li class="p1 p-2"><NuxtLink href="/about" @click="closeMenu">Solo player</NuxtLink></li>
+          <li class="p1 p-2"><NuxtLink href="/colors" @click="closeMenu">Multiplayer</NuxtLink></li>
+          <li class="p1 p-2"><NuxtLink href="/textsize" @click="closeMenu">Game Rules</NuxtLink></li>
+          <!--Characters & Powers and about us-->
+          <li class="p1 p-2"><NuxtLink href="/" @click="closeMenu">Home</NuxtLink></li>
+          <li class="p1 p-2"><NuxtLink href="/about" @click="closeMenu">About</NuxtLink></li>
+          <li class="p1 p-2"><NuxtLink href="/colors" @click="closeMenu">Colors</NuxtLink></li>
+          <li class="p1 p-2"><NuxtLink href="/textsize" @click="closeMenu">Textsize</NuxtLink></li>
         </ul>
       </nav>
     </transition>
@@ -60,12 +65,12 @@ export default {
 <style >
 .header {
   position: relative;
-  padding: 0.5rem 2rem;
+  padding: 0 2rem 0 2rem;
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
   justify-content: space-between;
-  background: #0d0c15;
+  @apply bg-greynav;
   color: #fefefc;
 }
 .header__title {
@@ -134,7 +139,7 @@ export default {
   padding: 50px;
   width: calc(100% );
   height: calc(100vh);
-  background: #756680;
+  @apply bg-grey-hb;
 }
 .nav.sp-menu .nav__list {
   display: flex;
