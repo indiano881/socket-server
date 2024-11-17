@@ -31,7 +31,10 @@ export default {
 
 <template>
   <header class="header">
-    <h1 class="header__title">Home page title</h1>
+    <div class="flex"> 
+      <img src="/public/icon.svg" alt="Nuxtermind logo" width="40" height="auto"/>
+      <h1 class="header__title">Nu<span class="text-green-400">x</span><span class="text-yellow-400">t</span><span class="text-blue-400">e</span>rmind</h1>
+    </div>
     <button
       v-show="buttonShow"
       class="menu-button"
@@ -45,15 +48,11 @@ export default {
     <transition name="fade">
       <nav v-show="menuOpen" class="nav" :class="{ 'sp-menu': buttonShow }">
         <ul class="flex flex-col md:flex-row">
-          <li class="p1 p-2"><NuxtLink href="/" @click="closeMenu">What is Nuxtermind?</NuxtLink></li>
-          <li class="p1 p-2"><NuxtLink href="/about" @click="closeMenu">Solo player</NuxtLink></li>
-          <li class="p1 p-2"><NuxtLink href="/colors" @click="closeMenu">Multiplayer</NuxtLink></li>
-          <li class="p1 p-2"><NuxtLink href="/textsize" @click="closeMenu">Game Rules</NuxtLink></li>
-          <!--Characters & Powers and about us-->
-          <li class="p1 p-2"><NuxtLink href="/" @click="closeMenu">Home</NuxtLink></li>
-          <li class="p1 p-2"><NuxtLink href="/about" @click="closeMenu">About</NuxtLink></li>
-          <li class="p1 p-2"><NuxtLink href="/colors" @click="closeMenu">Colors</NuxtLink></li>
-          <li class="p1 p-2"><NuxtLink href="/textsize" @click="closeMenu">Textsize</NuxtLink></li>
+          <li class="n1 p-2 md:pr-4"><NuxtLink href="/" @click="closeMenu">What is Nuxtermind?</NuxtLink></li>
+          <li class="n1 p-2 md:pr-4"><NuxtLink href="/about" @click="closeMenu">Solo player</NuxtLink></li>
+          <li class="n1 p-2 md:pr-4"><NuxtLink href="/colors" @click="closeMenu">Multiplayer</NuxtLink></li>
+          <li class="n1 p-2 md:pr-4"><NuxtLink href="/textsize" @click="closeMenu">Game Rules</NuxtLink></li>
+          <li class="n1 p-2 md:pr-4"><NuxtLink href="/about" @click="closeMenu">About</NuxtLink></li>  
         </ul>
       </nav>
     </transition>
@@ -64,6 +63,7 @@ export default {
 
 <style >
 .header {
+align-items: center;
   position: relative;
   padding: 0 2rem 0 2rem;
   display: flex;

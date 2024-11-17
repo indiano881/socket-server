@@ -55,6 +55,14 @@ export default {
             lineHeight: '4rem',
           }
         },
+        '.n1': {
+          fontSize: '1.5rem', // Mobile font size (30px)
+          lineHeight: '2.25rem',
+          fontWeight: 'regular',
+          '@screen lg': {
+            fontSize: '24px', // Desktop font size (36px)
+            lineHeight: '3rem',
+          }},
         '.p1': {
           fontSize: '1.5rem', // Mobile font size (30px)
           lineHeight: '2.25rem',
