@@ -52,6 +52,7 @@ export default {
           <li class="n1 p-2 md:pr-4"><NuxtLink href="/soloplayer" @click="closeMenu">Solo player</NuxtLink></li>
           <li class="n1 p-2 md:pr-4"><NuxtLink href="/multiplayer" @click="closeMenu">Multiplayer</NuxtLink></li>
           <li class="n1 p-2 md:pr-4"><NuxtLink href="/gamerules" @click="closeMenu">Game Rules</NuxtLink></li>
+          <li class="n1 p-2 md:pr-4"><NuxtLink href="/characters" @click="closeMenu">Char</NuxtLink></li>
           <li class="n1 p-2 md:pr-4"><NuxtLink href="/about" @click="closeMenu">About</NuxtLink></li>  
         </ul>
       </nav>
