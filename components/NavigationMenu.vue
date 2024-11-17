@@ -32,8 +32,8 @@ export default {
 <template>
   <header class="header">
     <div class="flex"> 
-      <img src="/public/icon.svg" alt="Nuxtermind logo" width="40" height="auto"/>
-      <h1 class="header__title">Nu<span class="text-green-400">x</span><span class="text-yellow-400">t</span><span class="text-blue-400">e</span>rmind</h1>
+      <NuxtLink href="/" @click="closeMenu"><img src="/public/icon.svg" alt="Nuxtermind logo" width="40" height="auto"/></NuxtLink>
+      <h1 class="header__title hidden md:block">Nu<span class="text-green-400">x</span><span class="text-yellow-400">t</span><span class="text-blue-400">e</span>rmind</h1>
     </div>
     <button
       v-show="buttonShow"
@@ -49,9 +49,9 @@ export default {
       <nav v-show="menuOpen" class="nav" :class="{ 'sp-menu': buttonShow }">
         <ul class="flex flex-col md:flex-row">
           <li class="n1 p-2 md:pr-4"><NuxtLink href="/" @click="closeMenu">What is Nuxtermind?</NuxtLink></li>
-          <li class="n1 p-2 md:pr-4"><NuxtLink href="/about" @click="closeMenu">Solo player</NuxtLink></li>
-          <li class="n1 p-2 md:pr-4"><NuxtLink href="/colors" @click="closeMenu">Multiplayer</NuxtLink></li>
-          <li class="n1 p-2 md:pr-4"><NuxtLink href="/textsize" @click="closeMenu">Game Rules</NuxtLink></li>
+          <li class="n1 p-2 md:pr-4"><NuxtLink href="/soloplayer" @click="closeMenu">Solo player</NuxtLink></li>
+          <li class="n1 p-2 md:pr-4"><NuxtLink href="/multiplayer" @click="closeMenu">Multiplayer</NuxtLink></li>
+          <li class="n1 p-2 md:pr-4"><NuxtLink href="/gamerules" @click="closeMenu">Game Rules</NuxtLink></li>
           <li class="n1 p-2 md:pr-4"><NuxtLink href="/about" @click="closeMenu">About</NuxtLink></li>  
         </ul>
       </nav>
@@ -72,6 +72,9 @@ align-items: center;
   justify-content: space-between;
   @apply bg-greynav;
   color: #fefefc;
+}
+img {
+  margin: 0.5rem
 }
 .header__title {
   margin: 0;

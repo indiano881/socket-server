@@ -59,6 +59,10 @@ export default {
           fontSize: '1.5rem', // Mobile font size (30px)
           lineHeight: '2.25rem',
           fontWeight: 'regular',
+          '@screen md': {
+            fontSize: '20px', // Desktop font size (36px)
+            lineHeight: '2rem',
+          },
           '@screen lg': {
             fontSize: '24px', // Desktop font size (36px)
             lineHeight: '3rem',

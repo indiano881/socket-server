@@ -1,3 +1,3 @@
 <template lang="pug">
-    h2 h2
+    h1 multiplayer
 </template>
