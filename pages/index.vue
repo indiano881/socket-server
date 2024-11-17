@@ -40,6 +40,3 @@ export default {
 };
 </script>
 
-<style scoped>
-/* Add any additional scoped CSS here if needed */
-</style>
