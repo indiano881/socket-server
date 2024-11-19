@@ -1,32 +1,33 @@
-<script>
-export default {
-  data() {
-    return {
-      windowWidth: "",
-      menuOpen: "",
-      buttonShow: ""
-    };
-  },
-  methods: {
-    getWindowWidth() {
-      this.windowWidth = window.innerWidth;
-      this.menuOpen = this.windowWidth >= 768;
-      this.buttonShow = this.windowWidth < 768;
-    },
-    closeMenu() {
-      if (this.buttonShow) {
-        this.menuOpen = false;
-      }
-    }
-  },
-  mounted() {
-    window.addEventListener("resize", this.getWindowWidth);
-    this.getWindowWidth(); // Ensure the initial width is set
-  },
-  beforeUnmount() {
-    window.removeEventListener("resize", this.getWindowWidth);
+<script setup>
+
+const user = useSupabaseUser()
+const windowWidth = ref('')
+const menuOpen = ref(false)
+const buttonShow = ref(false)
+
+const getWindowWidth = () => {
+  windowWidth.value = window.innerWidth
+  menuOpen.value = windowWidth.value >= 768
+  buttonShow.value = windowWidth.value < 768
+}
+
+const closeMenu = () => {
+  if (buttonShow.value) {
+    menuOpen.value = false
   }
-};
+}
+
+onMounted(() => {
+  window.addEventListener('resize', getWindowWidth)
+  getWindowWidth() // Ensure the initial width is set
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', getWindowWidth)
+})
+
+// Computed property to check if the user is logged in
+const isLoggedIn = computed(() => user.value !== null)
 </script>
 
 <template>
@@ -54,14 +55,15 @@ export default {
           <li class="n1 p-2 md:pr-4"><NuxtLink href="/gamerules" @click="closeMenu">Game Rules</NuxtLink></li>
           <li class="n1 p-2 md:pr-4"><NuxtLink href="/characters" @click="closeMenu">Char</NuxtLink></li>
           <li class="n1 p-2 md:pr-4"><NuxtLink href="/about" @click="closeMenu">About</NuxtLink></li>  
-          <li class="n1 p-2 md:pr-4"><NuxtLink href="/login" @click="closeMenu">login</NuxtLink></li>
-          <li class="n1 p-2 md:pr-4"><NuxtLink href="/register" @click="closeMenu">register</NuxtLink></li>
-          <li class="n1 p-2 md:pr-4"><NuxtLink href="/logout" @click="closeMenu">logout</NuxtLink></li> 
+          <li v-if="!isLoggedIn" class="n1 p-2 md:pr-4"><NuxtLink href="/login" @click="closeMenu">Login</NuxtLink></li>
+          <li v-if="!isLoggedIn" class="n1 p-2 md:pr-4"><NuxtLink href="/register" @click="closeMenu">Register</NuxtLink></li>
+          <li v-if="isLoggedIn" class="n1 p-2 md:pr-4"><NuxtLink href="/logout" @click="closeMenu">Logout</NuxtLink></li>
         </ul>
       </nav>
     </transition>
   </header>
 </template>
+
 
 
 
