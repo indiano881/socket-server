@@ -13,8 +13,8 @@ export default defineNuxtConfig({
   },
   modules: ['@nuxt/ui', '@nuxtjs/supabase'],
   supabase: {
-    url: process.env.SUPABASE_URL,
-    key: process.env.SUPABASE_KEY,
+    url: process.env.NEXT_PUBLIC_SUPABASE_URL,
+    key: process.env.NEXT_PUBLIC_SUPABASE_KEY,
     redirect: false //important set to false, otherwise every person navigates the site goes there
   }
 });
