@@ -118,19 +118,19 @@ interface Power {
       id: 6,
       name: "Flash",
       image: "/images/characters/flash.svg",
-      slug: "freddy-krueger",
+      slug: "flash",
       category: "Defensive",
-      description: "Freddy Krueger is the terrifying antagonist from the Nightmare on Elm Street series, known for haunting his victims' dreams.",
+      description: "Flash is a superhero known for his incredible speed, which allows him to move and think at lightning-fast speeds.",
       powers: [
         {
-          name: "Dream Manipulation",
-          description: "Freddy can invade and control the dreams of his victims, making their worst nightmares come to life.",
-          image: "/images/powers/power-hearth.svg"
+          name: "Super Speed",
+          description: "Flash can run at superhuman speeds, allowing him to move faster than the eye can see and travel great distances instantly.",
+          image: "/images/powers/power-time.svg"
         },
         {
-          name: "Immortality in Dreams",
-          description: "Freddy is nearly invincible in the dream world, using it to his advantage to toy with and terrorize his victims.",
-          image: "/images/powers/power-time.svg"
+          name: "Speed Force Manipulation",
+          description: "Flash can tap into the Speed Force to phase through objects, time travel, and generate powerful energy bursts.",
+          image: "/images/powers/power-atomic.svg"
         }
       ]
     }
