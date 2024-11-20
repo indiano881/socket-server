@@ -1,5 +1,6 @@
 <template>
   <div class="p-6 max-w-4xl mx-auto bg-white rounded-xl shadow-md space-y-4 my-4 border-4 border-greynav">
+    <Gameboard />
     <h1 class="text-3xl font-bold text-gray-800">What is Nuxtermind?</h1>
     <p class="text-gray-600">
       Nuxtermind is a modern twist on the classic Mastermind game, reimagined for the digital age with enhanced gameplay and interactive features.
