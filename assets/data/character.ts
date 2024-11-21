@@ -1,19 +1,19 @@
 // Define the types for character powers
-interface Power {
+interface PowerType {
     name: string;
     description: string;
     image: string;
   }
   
   // Define the type for characters
-  interface Character {
+  interface CharacterType {
     id: number;
     name: string;
     image: string;
     slug: string;
     category: string;
     description: string;
-    powers: Power[];
+    powers: PowerType[];
   }
   export const Characters= [
     {id: 1,
