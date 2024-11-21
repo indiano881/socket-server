@@ -39,9 +39,9 @@
     </section>
 
     <div class="pt-6">
-      <button @click="startSoloGame" class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition duration-300">
+      <NuxtLink href="/soloplayer/gamesolo" class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition duration-300">
         Start Solo Game
-      </button>
+      </NuxtLink>
     </div>
   </div>
 </template>
@@ -49,12 +49,7 @@
 <script>
 export default {
   name: 'SoloPlayerPage',
-  methods: {
-    startSoloGame() {
-      console.log('Solo game started!');
-      // Code to start the solo game can be implemented here
-    }
-  }
+ 
 };
 </script>
 
