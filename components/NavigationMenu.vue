@@ -78,6 +78,7 @@ align-items: center;
   justify-content: space-between;
   @apply bg-greynav;
   color: #fefefc;
+  z-index: 50;
 }
 img {
   margin: 0.5rem

@@ -23,15 +23,34 @@ const handleSelection = (option) => {
 const options = [ ...Characters.map((character) => ({
   id: character.id,
   label: character.name,
-  icon: character.image, // Default icon for characters (you can customize this)
+  icon: character.image,
+  description: character.description,
+  category: character.category,
+  powerImg1: character.powers[0].image,
+  powerImg2: character.powers[1].image,
 }))];
 
 const selectedOption = ref(options[0]); // Default selection
+// Manage modal visibility
+const showModal = ref(false);
+const selectedPower = ref({ name: '', description: '' });
+
+// Open the modal with power details
+const openPowerModal = (power) => {
+  selectedPower.value = power;
+  showModal.value = true;
+};
+
+// Close the modal
+const closeModal = () => {
+  showModal.value = false;
+};
 </script>
 
 
 
 <template>
+    <div>
     <div class="dropholder">
       <p>Select</p>
       <div class="dropdown" @click="toggleMenu">
@@ -65,12 +84,46 @@ const selectedOption = ref(options[0]); // Default selection
           {{ option.label }}
         </li>
       </ul>
+      <!-- Display selected character name -->
+    
     </div>
+    <div v-if="selectedOption" class="mt-10 text-center flex flex-col items-center">
+    <img :src="selectedOption.icon" :alt="selectedOption.label" width="180px" height="auto" />
+    <h2 class="text-xl text-black font-bold">{{ selectedOption.label }}</h2>
+    <h2 class="text-md text-black font-bold">Category: {{ selectedOption.category }}</h2>
+    <h2 class="text-sm text-black italic">{{ selectedOption.description }}</h2>
+    
+    <div class="flex gap-4 mt-6">
+      <img 
+        v-for="(power, index) in Characters.find(char => char.id === selectedOption.id)?.powers.slice(0, 2)" 
+        :key="index" 
+        :src="power.image" 
+        :alt="power.name" 
+        width="60px" 
+        height="auto" 
+        class="cursor-pointer" 
+        @click="openPowerModal(power)" 
+      />
+    </div>
+    
+    <!-- Modal -->
+    <div v-if="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg shadow-lg p-6 w-80 text-center">
+        <h3 class="text-lg font-bold mb-4">{{ selectedPower.name }}</h3>
+        <p class="text-sm text-gray-600">{{ selectedPower.description }}</p>
+        <button @click="closeModal" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
   </template>
   
   <style scoped>
  
 .dropholder{
+    
   width: 322px;
   height: 60px;
   padding:0 0 0 20px;
@@ -109,7 +162,7 @@ p{
   font-size:16px;
 }
 .dropdown, .dropholder{
-  background:linear-gradient(#da4df8 ,#9b0db9);
+  background:linear-gradient(#b314d6 ,#470255);
 }
 .dropdown{
   margin-left:20px;
@@ -144,7 +197,7 @@ p{
   transform-style: preserve-3d;
   transform:rotatey(180deg) rotateX(5deg) translatey(100px);
   backface-visibility: hidden;
-  background:linear-gradient(#4dc2f8 ,#0d82b9);
+  background:linear-gradient(#b314d6 ,#470255);
   border:2px solid #0d82b9;
   border-radius:10px;
   transition:all 0.8s;
