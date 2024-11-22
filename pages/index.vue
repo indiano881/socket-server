@@ -12,23 +12,12 @@
         <li>Real-Time Multiplayer Gameplay: Compete against friends or challenge players worldwide.</li>
         <li>Unique Characters with special abilities.</li>
         <li>Tournament Mode to climb the ranks and win rewards.</li>
-        <li>Earn game tokens through victories.</li>
-        <li>Customizable game rules and cross-platform support.</li>
+        <li>Win tokens for victories and use them for upgrades.</li>
       </ul>
     </div>
 
-    <div class="space-y-2">
-      <h2 class="text-2xl font-semibold text-gray-700">How to Play?</h2>
-      <ol class="list-decimal list-inside text-gray-600">
-        <li>Pick your character with unique powers.</li>
-        <li>Enter the code arena and start guessing.</li>
-        <li>Receive feedback with each attempt to get closer to cracking the code.</li>
-        <li>Win tokens for victories and use them for upgrades.</li>
-      </ol>
-    </div>
-
-    <div class="pt-4">
-      <button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-300">
+    <div class="flex flex-col pt-4">
+      <button  class="bg-green-500 text-white text-4xl px-8 py-4 rounded-lg hover:bg-green-600 transition duration-300 border-2 border-black">
         Play Now
       </button>
     </div>

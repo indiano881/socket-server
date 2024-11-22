@@ -3,7 +3,7 @@
 </script>
 
 <template>
-    <div>
+    <div class="relative">
         <NavigationMenu />
         <slot />
     </div>

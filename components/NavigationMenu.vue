@@ -69,9 +69,9 @@ const isLoggedIn = computed(() => user.value !== null)
 
 <style >
 .header {
-align-items: center;
-  position: relative;
-  padding: 0 2rem 0 2rem;
+  align-items: center;
+  position: sticky;
+  padding: 0 2rem 6px 2rem;
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
@@ -91,7 +91,7 @@ img {
 
 .menu-button {
   appearance: none;
-  position: fixed;
+  position: absolute;
   top: calc((3.8rem - 44px) / 2);
   right: 15px;
   display: inline-block;
