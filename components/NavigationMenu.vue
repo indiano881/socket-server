@@ -50,7 +50,7 @@ const isLoggedIn = computed(() => user.value !== null)
       <nav v-show="menuOpen" class="nav" :class="{ 'sp-menu': buttonShow }">
         <ul class="flex flex-col md:flex-row">
           <li class="n1 p-2 md:pr-4"><NuxtLink href="/" @click="closeMenu">What is Nuxtermind?</NuxtLink></li>
-          <li class="n1 p-2 md:pr-4"><NuxtLink href="/soloplayer" @click="closeMenu">Solo player</NuxtLink></li>
+          <li class="n1 p-2 md:pr-4"><NuxtLink href="/soloplayer" @click="closeMenu">Practice Mode</NuxtLink></li>
           <li class="n1 p-2 md:pr-4"><NuxtLink href="/multiplayer" @click="closeMenu">Multiplayer</NuxtLink></li>
           <li class="n1 p-2 md:pr-4"><NuxtLink href="/gamerules" @click="closeMenu">Game Rules</NuxtLink></li>
           <li class="n1 p-2 md:pr-4"><NuxtLink href="/characters" @click="closeMenu">Char</NuxtLink></li> 
