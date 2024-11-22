@@ -2,6 +2,8 @@
 import { ref } from 'vue';
 import { Characters } from '@/assets/data/character.ts'; // Import your Characters
 
+
+const emit = defineEmits(['characterSelected']);
 // Manage dropdown visibility
 const showMenu = ref(false);
 
@@ -14,6 +16,8 @@ const toggleMenu = () => {
 const handleSelection = (option) => {
   selectedOption.value = option;
   showMenu.value = false;
+
+  emit('characterSelected', option);
 };
 
 // Default options
