@@ -5,7 +5,7 @@
             <CharacterSelection />
         </div>
         <div class="flex flex-col">
-            <button  class="bg-green-500 text-white text-4xl px-8 py-4 rounded-lg hover:bg-green-600 transition duration-300 border-2 border-black">
+            <button class="bg-green-500 text-white text-4xl px-8 py-4 rounded-lg hover:bg-green-600 transition duration-300 border-2 border-black">
         Ready???
       </button>
         </div>

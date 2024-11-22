@@ -96,7 +96,7 @@ interface PowerType {
     },
     {
       id: 5,
-      name: "Freddy Krueger",
+      name: "Freddy",
       image: "/images/characters/freddy.svg",
       slug: "freddy-krueger",
       category: "Aggressive",

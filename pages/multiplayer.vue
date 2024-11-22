@@ -1,7 +1,11 @@
 <template>
     <div class="p-8 max-w-5xl mx-auto bg-white rounded-xl shadow-md space-y-6 my-4 border-4 border-greynav">
       <h1 class="text-4xl font-bold text-gray-800 text-center">Multiplayer Mode</h1>
-  
+      <div class="pt-6 flex justify-center">
+        <button @click="startMultiplayerGame" class="bg-green-500 text-white text-4xl px-8 py-4 rounded-lg hover:bg-green-600 transition duration-300 border-2 border-black">
+          Multiplayer Game
+        </button>
+      </div>
       <section class="space-y-4">
         <h2 class="text-2xl font-semibold text-gray-700">Overview</h2>
         <p class="text-gray-600">
@@ -38,11 +42,7 @@
         </p>
       </section>
   
-      <div class="pt-6">
-        <button @click="startMultiplayerGame" class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition duration-300">
-          Join Multiplayer Game
-        </button>
-      </div>
+      
     </div>
   </template>
   

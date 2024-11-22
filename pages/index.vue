@@ -17,9 +17,9 @@
     </div>
 
     <div class="flex flex-col pt-4">
-      <button  class="bg-green-500 text-white text-4xl px-8 py-4 rounded-lg hover:bg-green-600 transition duration-300 border-2 border-black">
+      <NuxtLink href="/multiplayer" class="flex justify-center bg-green-500 text-white text-4xl px-8 py-4 rounded-lg hover:bg-green-600 transition duration-300 border-2 border-black">
         Play Now
-      </button>
+      </NuxtLink>
     </div>
   </div>
 </template>

@@ -50,7 +50,7 @@ const closeModal = () => {
 
 
 <template>
-    <div>
+    <div class="flex flex-col items-center">
     <div class="dropholder">
       <p>Select</p>
       <div class="dropdown" @click="toggleMenu">
@@ -109,9 +109,9 @@ const closeModal = () => {
     <!-- Modal -->
     <div v-if="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div class="bg-white rounded-lg shadow-lg p-6 w-80 text-center">
-        <h3 class="text-lg font-bold mb-4">{{ selectedPower.name }}</h3>
-        <p class="text-sm text-gray-600">{{ selectedPower.description }}</p>
-        <button @click="closeModal" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded">
+        <h3 class="text-lg font-bold mb-2">{{ selectedPower.name }}</h3>
+        <p class="text-sm text-gray-900">{{ selectedPower.description }}</p>
+        <button @click="closeModal" class="mt-4 bg-yellow-400 text-black px-4 py-2 rounded">
           Close
         </button>
       </div>
@@ -123,11 +123,10 @@ const closeModal = () => {
   <style scoped>
  
 .dropholder{
-    
   width: 322px;
   height: 60px;
   padding:0 0 0 20px;
-  margin-bottom: 40px;
+  margin-bottom: 10px;
   border-radius:10px;
   font:18px arial;
   color: #fff;
@@ -151,7 +150,6 @@ const closeModal = () => {
   left:37px;
   margin: auto;
   border-radius:50%;
-  box-shadow:0 15px 10px rgba(0,0,0, 0.4);
   animation: moveShadow 3s ease-in-out infinite;
 }
 p{
@@ -159,7 +157,7 @@ p{
   line-height:60px;
 }
 .dropdown > p{
-  font-size:16px;
+  font-size:20px;
 }
 .dropdown, .dropholder{
   background:linear-gradient(#b314d6 ,#470255);
@@ -180,9 +178,9 @@ p{
 }
 .dropdown:after{
   content:"▾";
-  font-size: 18px;
+  font-size: 22px;
   position: absolute;
-  right:20px;
+  right:6px;
   top:18px;
   display: block;
 }
@@ -211,7 +209,8 @@ p{
   transition:all 0.3s;
 }
 .menu li:hover{
-  background:#61ccfd;
+  background:#6efd61;
+  color: black;
   padding-left:20px;
 }
 .menu li:last-child{
@@ -243,5 +242,8 @@ i{
   0%,100%{transform:translateY(10px);opacity:0.4;}
   50%{transform:translateY(0);opacity:1;}
 }
+
+
+
   </style>
 
