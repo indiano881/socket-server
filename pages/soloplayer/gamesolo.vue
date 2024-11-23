@@ -67,11 +67,12 @@
             class="grid grid-cols-4 gap-2 border-2 border-gray-300 rounded-lg p-2 bg-gray-100"
           >
             <div 
-              v-for="(color, index) in 28" 
-              :key="'color-' + index" 
-              class="w-10 h-10 rounded-full bg-white"
+              v-for="(color, index) in colorGrid" 
+              :key="'color-grid-' + index" 
+              class="w-10 h-10 rounded-full"
+              :style="{ backgroundColor: color }"
             >
-              <!-- All cells are white -->
+              <!-- Dynamically updated colors -->
             </div>
           </div>
         </div>
@@ -85,9 +86,22 @@
             :key="'peg-' + index" 
             class="w-6 h-6 rounded-full border border-black bg-white"
           >
-            <!-- All cells are white -->
+            <!-- Pegs grid -->
           </div>
         </div>
+      </div>
+
+      <!-- Buttons for Selecting Colors -->
+      <div class="grid grid-cols-4 gap-4 mt-4">
+        <button 
+          v-for="(color, index) in availableColors" 
+          :key="'button-' + index" 
+          class="w-10 h-10 rounded-full shadow-md focus:outline-none hover:ring-2 hover:ring-gray-500 transition"
+          :style="{ backgroundColor: color }"
+          @click="addColorToGrid(color)"
+        >
+          <!-- Color buttons -->
+        </button>
       </div>
     </div>
   </div>
@@ -102,10 +116,27 @@ const countdown = ref(3); // Pre-game countdown
 const gameCountdown = ref(30); // In-game countdown
 const progress = ref(100); // Progress bar width
 
+// Available colors (8 colors)
+const availableColors = ['red', 'blue', 'green', 'yellow', 'purple', 'orange', 'pink', 'cyan'];
+
+// Initialize a 4x7 grid with white cells
+const colorGrid = ref(Array(28).fill('white'));
+
 // Handle the emitted event
 const onCharacterSelected = (character) => {
   selectedCharacter.value = character;
   console.log(selectedCharacter.value);
+};
+
+// Add selected color to the grid (left-to-right behavior)
+const addColorToGrid = (color) => {
+  // Find the first empty cell (white) starting from the top-left
+  for (let i = 0; i < colorGrid.value.length; i++) {
+    if (colorGrid.value[i] === 'white') {
+      colorGrid.value[i] = color;
+      break;
+    }
+  }
 };
 
 // Start the pre-game countdown
@@ -139,11 +170,5 @@ const startGameCountdown = () => {
       console.log("Game Over!");
     }
   }, 1000);
-};
-
-// Utility function to pick colors
-const colorPicker = (index) => {
-  const colors = ['red', 'blue', 'green', 'yellow', 'purple', 'orange', 'pink'];
-  return colors[index % colors.length]; // Cycle through the colors array
 };
 </script>
