@@ -1,5 +1,22 @@
 <template>
   <div class="p-4 max-w-5xl mx-auto bg-white rounded-xl shadow-md space-y-6 my-4 border-4 border-greynav">
+    <!-- Modal -->
+    <div 
+      v-if="showWinModal" 
+      class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
+    >
+      <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+        <h1 class="text-4xl font-bold text-green-600">You Win!</h1>
+        <p class="text-xl mt-4">Time left: <span class="font-bold">{{ gameCountdown }} seconds</span></p>
+        <button 
+          class="bg-green-500 text-white px-6 py-2 rounded-lg mt-4 hover:bg-green-600"
+          @click="restartGame"
+        >
+          Play Again
+        </button>
+      </div>
+    </div>
+
     <!-- Title: Hide during countdown and gameboard -->
     <h1 
       v-if="!isCountdownRunning && !isGameStarted" 
@@ -82,9 +99,10 @@
           class="basis-1/4 grid grid-cols-4 gap-2 border-2 border-gray-300 rounded-lg p-2 bg-gray-100"
         >
           <div 
-            v-for="(peg, index) in 28" 
+            v-for="(peg, index) in pegsGrid" 
             :key="'peg-' + index" 
-            class="w-6 h-6 rounded-full border border-black bg-white"
+            class="w-6 h-6 rounded-full border border-black"
+            :style="{ backgroundColor: peg }"
           >
             <!-- Pegs grid -->
           </div>
@@ -112,46 +130,117 @@
 const selectedCharacter = ref(null);
 const isCountdownRunning = ref(false);
 const isGameStarted = ref(false);
+const showWinModal = ref(false); // Controls the win modal visibility
 const countdown = ref(3); // Pre-game countdown
-const gameCountdown = ref(30); // In-game countdown
+const gameCountdown = ref(230); // In-game countdown
 const progress = ref(100); // Progress bar width
+let timerInterval; // Timer interval reference
 
 // Available colors (8 colors)
 const availableColors = ['red', 'blue', 'green', 'yellow', 'purple', 'orange', 'pink', 'cyan'];
 
 // Initialize a 4x7 grid with white cells
 const colorGrid = ref(Array(28).fill('white'));
+const pegsGrid = ref(Array(28).fill('white')); // Feedback pegs (green, grey, or white)
+const currentRow = ref(0); // Track the current row (0-6)
+const secretCombination = ref([]); // Secret combination of 4 colors
 
-// Handle the emitted event
-const onCharacterSelected = (character) => {
-  selectedCharacter.value = character;
-  console.log(selectedCharacter.value);
+// Generate a random secret combination
+const generateSecretCombination = () => {
+  secretCombination.value = [];
+  for (let i = 0; i < 4; i++) {
+    const randomIndex = Math.floor(Math.random() * availableColors.length);
+    secretCombination.value.push(availableColors[randomIndex]);
+  }
+  console.log("Secret Combination:", secretCombination.value);
+};
+
+// Check if the current row matches the secret combination
+const checkRowMatch = () => {
+  const start = currentRow.value * 4;
+  const end = start + 4;
+  const rowColors = colorGrid.value.slice(start, end);
+  const feedbackPegs = Array(4).fill(null); // Initialize feedback for the current row
+
+  // Create copies for matching
+  const secret = [...secretCombination.value];
+  const player = [...rowColors];
+
+  // Check for correct colors in the correct position (green pegs)
+  player.forEach((color, index) => {
+    if (color === secret[index]) {
+      feedbackPegs[index] = 'green'; // Correct color and position
+      secret[index] = null; // Remove from matching pool
+      player[index] = null; // Mark as matched
+    }
+  });
+
+  // Check for correct colors in the wrong position (grey pegs)
+  player.forEach((color, playerIndex) => {
+    if (color && secret.includes(color)) {
+      const secretIndex = secret.indexOf(color);
+      feedbackPegs[playerIndex] = 'grey'; // Correct color, wrong position
+      secret[secretIndex] = null; // Remove from matching pool
+    }
+  });
+
+  // Fill feedback pegs into the pegs grid
+  for (let i = 0; i < 4; i++) {
+    const pegIndex = start + i;
+    pegsGrid.value[pegIndex] = feedbackPegs[i] || 'white'; // Default to white if no feedback
+  }
+
+  // Check if all pegs in this row are green
+  if (feedbackPegs.every((peg) => peg === 'green')) {
+    clearInterval(timerInterval); // Stop the timer
+    showWinModal.value = true; // Show the win modal
+  } else {
+    currentRow.value += 1; // Move to the next row
+  }
+};
+
+// Restart the game
+const restartGame = () => {
+  colorGrid.value = Array(28).fill('white');
+  pegsGrid.value = Array(28).fill('white');
+  currentRow.value = 0;
+  isGameStarted.value = false;
+  showWinModal.value = false;
+  gameCountdown.value = 230;
+  generateSecretCombination();
 };
 
 // Add selected color to the grid (left-to-right behavior)
 const addColorToGrid = (color) => {
-  // Find the first empty cell (white) starting from the top-left
-  for (let i = 0; i < colorGrid.value.length; i++) {
+  const start = currentRow.value * 4;
+  const end = start + 4;
+
+  for (let i = start; i < end; i++) {
     if (colorGrid.value[i] === 'white') {
       colorGrid.value[i] = color;
+      if (i === end - 1) {
+        checkRowMatch();
+      }
       break;
     }
   }
 };
 
+// Handle the emitted event
+const onCharacterSelected = (character) => {
+  selectedCharacter.value = character;
+};
+
 // Start the pre-game countdown
 const startCountdown = () => {
   isCountdownRunning.value = true;
-
   const interval = setInterval(() => {
     countdown.value -= 1;
-
     if (countdown.value === 0) {
       clearInterval(interval);
       isCountdownRunning.value = false;
       isGameStarted.value = true;
-
-      // Start the game countdown and progress bar
+      generateSecretCombination();
       startGameCountdown();
     }
   }, 1000);
@@ -159,16 +248,15 @@ const startCountdown = () => {
 
 // Start the in-game countdown and manage the progress bar
 const startGameCountdown = () => {
-  const totalGameTime = 30; // seconds
-  const interval = setInterval(() => {
+  const totalGameTime = 230;
+  timerInterval = setInterval(() => {
     gameCountdown.value -= 1;
     progress.value = (gameCountdown.value / totalGameTime) * 100;
-
     if (gameCountdown.value <= 0) {
-      clearInterval(interval);
-      // Add any game-over logic here
+      clearInterval(timerInterval);
       console.log("Game Over!");
     }
   }, 1000);
 };
 </script>
+
