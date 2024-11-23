@@ -69,10 +69,9 @@
             <div 
               v-for="(color, index) in 28" 
               :key="'color-' + index" 
-              class="w-10 h-10 rounded-full" 
-              :style="{ backgroundColor: colorPicker(index) }"
+              class="w-10 h-10 rounded-full bg-white"
             >
-              <!-- Colors go here -->
+              <!-- All cells are white -->
             </div>
           </div>
         </div>
@@ -86,7 +85,7 @@
             :key="'peg-' + index" 
             class="w-6 h-6 rounded-full border border-black bg-white"
           >
-            <!-- Pegs go here -->
+            <!-- All cells are white -->
           </div>
         </div>
       </div>
