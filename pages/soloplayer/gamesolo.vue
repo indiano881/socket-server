@@ -1,7 +1,7 @@
 <template>
   <div class="p-4 max-w-5xl mx-auto bg-white rounded-xl shadow-md space-y-6 my-4 border-4 border-greynav">
-    <!-- Modal -->
-    <div 
+   <!-- Win Modal -->
+   <div 
       v-if="showWinModal" 
       class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
     >
@@ -13,6 +13,31 @@
           @click="restartGame"
         >
           Play Again
+        </button>
+      </div>
+    </div>
+
+    <!-- Lose Modal -->
+    <div 
+      v-if="showLoseModal" 
+      class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
+    >
+      <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+        <h1 class="text-4xl font-bold text-red-600">You Lose!</h1>
+        <p class="text-xl mt-4">The correct combination was:</p>
+        <div class="flex justify-center space-x-2 mt-4">
+          <div 
+            v-for="(color, index) in secretCombination" 
+            :key="'secret-' + index" 
+            class="w-10 h-10 rounded-full"
+            :style="{ backgroundColor: color }"
+          ></div>
+        </div>
+        <button 
+          class="bg-red-500 text-white px-6 py-2 rounded-lg mt-4 hover:bg-red-600"
+          @click="restartGame"
+        >
+          Try Again
         </button>
       </div>
     </div>
@@ -131,8 +156,9 @@ const selectedCharacter = ref(null);
 const isCountdownRunning = ref(false);
 const isGameStarted = ref(false);
 const showWinModal = ref(false); // Controls the win modal visibility
+const showLoseModal = ref(false); // Controls the lose modal visibility
 const countdown = ref(3); // Pre-game countdown
-const gameCountdown = ref(230); // In-game countdown
+const gameCountdown = ref(100); // In-game countdown
 const progress = ref(100); // Progress bar width
 let timerInterval; // Timer interval reference
 
@@ -190,13 +216,24 @@ const checkRowMatch = () => {
     pegsGrid.value[pegIndex] = feedbackPegs[i] || 'white'; // Default to white if no feedback
   }
 
-  // Check if all pegs in this row are green
+  // Check if all pegs in this row are green (win condition)
   if (feedbackPegs.every((peg) => peg === 'green')) {
     clearInterval(timerInterval); // Stop the timer
     showWinModal.value = true; // Show the win modal
-  } else {
-    currentRow.value += 1; // Move to the next row
+    return;
   }
+
+  // Move to the next row or trigger loss if out of attempts
+  currentRow.value += 1;
+  if (currentRow.value >= 7) {
+    handleLoss();
+  }
+};
+
+// Handle loss scenarios
+const handleLoss = () => {
+  clearInterval(timerInterval); // Stop the timer
+  showLoseModal.value = true; // Show the lose modal
 };
 
 // Restart the game
@@ -206,7 +243,10 @@ const restartGame = () => {
   currentRow.value = 0;
   isGameStarted.value = false;
   showWinModal.value = false;
-  gameCountdown.value = 230;
+  showLoseModal.value = false;
+  gameCountdown.value = 100;
+  countdown.value = 3;
+  selectedCharacter.value = null; // Reset the selected character
   generateSecretCombination();
 };
 
@@ -254,9 +294,8 @@ const startGameCountdown = () => {
     progress.value = (gameCountdown.value / totalGameTime) * 100;
     if (gameCountdown.value <= 0) {
       clearInterval(timerInterval);
-      console.log("Game Over!");
+      handleLoss(); // Trigger loss if time runs out
     }
   }, 1000);
 };
 </script>
-
