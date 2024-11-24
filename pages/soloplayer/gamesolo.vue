@@ -135,17 +135,48 @@
       </div>
 
       <!-- Buttons for Selecting Colors -->
-      <div class="grid grid-cols-4 gap-4 mt-4">
-        <button 
-          v-for="(color, index) in availableColors" 
-          :key="'button-' + index" 
-          class="w-10 h-10 rounded-full shadow-md focus:outline-none hover:ring-2 hover:ring-gray-500 transition"
-          :style="{ backgroundColor: color }"
-          @click="addColorToGrid(color)"
-        >
-          <!-- Color buttons -->
-        </button>
-      </div>
+<div class="grid grid-cols-4 gap-4 mt-4">
+  <button 
+    v-for="(color, index) in availableColors" 
+    :key="'button-' + index" 
+    class="w-10 h-10 rounded-full shadow-md focus:outline-none hover:ring-2 hover:ring-gray-500 transition"
+    :style="{ backgroundColor: color }"
+    @click="addColorToGrid(color)"
+  >
+    <!-- Color buttons -->
+  </button>
+</div>
+
+<!-- Character Power Buttons -->
+<div v-if="selectedCharacter" class="flex flex-col items-center space-y-4 mt-4">
+  <!-- Power 1 Button -->
+  <button 
+    v-if="selectedCharacter.powerImg1" 
+    class="flex items-center justify-center w-32 h-32 bg-gray-200 border-2 border-black rounded-lg shadow-md hover:bg-gray-300 transition"
+    @click="applyPower(selectedCharacter.powerImg1)"
+  >
+    <img 
+      :src="selectedCharacter.powerImg1" 
+      alt="Power 1"
+      class="w-24 h-24"
+    />
+  </button>
+  
+  <!-- Power 2 Button -->
+  <button 
+    v-if="selectedCharacter.powerImg2" 
+    class="flex items-center justify-center w-32 h-32 bg-gray-200 border-2 border-black rounded-lg shadow-md hover:bg-gray-300 transition"
+    @click="applyPower(selectedCharacter.powerImg2)"
+  >
+    <img 
+      :src="selectedCharacter.powerImg2" 
+      alt="Power 2"
+      class="w-24 h-24"
+    />
+  </button>
+</div>
+
+
     </div>
   </div>
 </template>
@@ -269,6 +300,7 @@ const addColorToGrid = (color) => {
 // Handle the emitted event
 const onCharacterSelected = (character) => {
   selectedCharacter.value = character;
+  console.log(character.powerImg1)
 };
 
 // Start the pre-game countdown
@@ -298,4 +330,20 @@ const startGameCountdown = () => {
     }
   }, 1000);
 };
+
+// Apply a power based on the provided image
+const applyPower = (powerImage) => {
+  if (powerImage === selectedCharacter.value.powerImg1) {
+    // Power 1: Add 5 seconds
+    gameCountdown.value = Math.min(gameCountdown.value + 5, 230); // Cap at the maximum game time
+    console.log("Power 1 activated! Added 5 seconds.");
+  } else if (powerImage === selectedCharacter.value.powerImg2) {
+    // Power 2: Add 15 seconds
+    gameCountdown.value = Math.min(gameCountdown.value + 15, 230); // Cap at the maximum game time
+    console.log("Power 2 activated! Added 15 seconds.");
+  } else {
+    console.warn("Unknown power activated.");
+  }
+};
+
 </script>
