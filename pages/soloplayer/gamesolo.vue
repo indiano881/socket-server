@@ -79,14 +79,14 @@
       v-if="isGameStarted" 
       class="flex flex-col bg-purple-300 rounded-lg shadow-md border-2 border-black"
     >
-      <div class="flex items-center justify-between px-4 py-2">
+      <div class="flex items-center justify-between px-4 py-2 ">
          <!-- Energy Points Display -->
-         <div class="flex flex-col items-center">
-    <p class="text-xl font-bold text-yellow-600">Energy</p>
+         <div class="flex flex-col items-center bg-white border-2 border-black rounded-xl">
+    <p class="text-xl font-bold text-blck">Energy</p>
     <p class="text-2xl font-bold" 
        :class="{
          'text-green-600': energyPoints > 0,
-         'text-red-600': energyPoints === 0
+         'text-yellow-500': energyPoints === 0
        }">
       {{ energyPoints }}/{{ maxEnergyPoints }}
     </p>
@@ -145,33 +145,22 @@
         </div>
       </div>
 
-      <!-- Buttons for Selecting Colors -->
-<div class="grid grid-cols-4 gap-4 mt-4">
-  <button 
-    v-for="(color, index) in availableColors" 
-    :key="'button-' + index" 
-    class="w-10 h-10 rounded-full shadow-md focus:outline-none hover:ring-2 hover:ring-gray-500 transition"
-    :style="{ backgroundColor: color }"
-    @click="addColorToGrid(color)"
-  >
-    <!-- Color buttons -->
-  </button>
-</div>
-
+ <!-- Buttons CONTAINER -->
+      <div class="flex justify-evenly">
 <!-- Character Power Buttons -->
-<div v-if="selectedCharacter" class="flex flex-col items-center space-y-4 mt-4">
+<div v-if="selectedCharacter" class="flex flex-col items-center justify-around">
   <!-- Power 1 Button -->
   <button 
     v-if="selectedCharacter.powerImg1" 
     :disabled="energyPoints < 3" 
     :class="{ 'grayscale': energyPoints < 3 }"
-    class="flex items-center justify-center w-32 h-32 bg-gray-200 border-2 border-black rounded-lg shadow-md hover:bg-gray-300 transition"
+    class="flex items-center justify-center w-20 h-20 bg-white border-2 border-black rounded-full  hover:bg-gray-300 transition"
     @click="applyPower(selectedCharacter.powerImg1)"
   >
     <img 
       :src="selectedCharacter.powerImg1" 
       alt="Power 1"
-      class="w-24 h-24"
+      class="w-20 h-20"
     />
   </button>
   
@@ -180,16 +169,34 @@
     v-if="selectedCharacter.powerImg2" 
     :disabled="energyPoints < 5" 
     :class="{ 'grayscale': energyPoints < 5 }"
-    class="flex items-center justify-center w-32 h-32 bg-gray-200 border-2 border-black rounded-lg shadow-md hover:bg-gray-300 transition"
+    class="flex items-center justify-center w-20 h-20 bg-white border-2 border-black rounded-full  hover:bg-gray-300 transition"
     @click="applyPower(selectedCharacter.powerImg2)"
   >
     <img 
       :src="selectedCharacter.powerImg2" 
       alt="Power 2"
-      class="w-24 h-24"
+      class="w-20 h-20"
     />
   </button>
 </div>
+ <!-- Buttons for Selecting Colors -->
+ <div class="grid grid-cols-3 gap-2 mt-2">
+  <button 
+    v-for="(color, index) in availableColors" 
+    :key="'button-' + index" 
+    class="w-12 h-12 rounded-full shadow-md focus:outline-none hover:ring-2 hover:ring-gray-500 transition border-2 border-black"
+    :style="{ backgroundColor: color }"
+    @click="addColorToGrid(color)"
+  >
+    <!-- Color buttons -->
+  </button>
+</div>
+
+      </div>
+
+     
+
+
 
 
 
@@ -212,7 +219,7 @@ const energyPoints = ref(0);
 let timerInterval; // Timer interval reference
 
 // Available colors (8 colors)
-const availableColors = ['red', 'blue', 'green', 'yellow', 'purple', 'orange', 'pink', 'cyan'];
+const availableColors = ['red', 'blue', 'green', 'yellow', 'purple', 'orange', 'pink', 'cyan', 'brown'];
 
 // Initialize a 4x7 grid with white cells
 const colorGrid = ref(Array(28).fill('white'));
@@ -305,7 +312,7 @@ const restartGame = () => {
   gameCountdown.value = 100;
   countdown.value = 3;
   selectedCharacter.value = null; // Reset the selected character
-  energyPoints=0;
+  energyPoints.value=0;
   generateSecretCombination();
 };
 
