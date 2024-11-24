@@ -152,6 +152,8 @@
   <!-- Power 1 Button -->
   <button 
     v-if="selectedCharacter.powerImg1" 
+    :disabled="points < 3" 
+    :class="{ 'grayscale': points < 3 }"
     class="flex items-center justify-center w-32 h-32 bg-gray-200 border-2 border-black rounded-lg shadow-md hover:bg-gray-300 transition"
     @click="applyPower(selectedCharacter.powerImg1)"
   >
@@ -165,6 +167,8 @@
   <!-- Power 2 Button -->
   <button 
     v-if="selectedCharacter.powerImg2" 
+    :disabled="points < 5" 
+    :class="{ 'grayscale': points < 5 }"
     class="flex items-center justify-center w-32 h-32 bg-gray-200 border-2 border-black rounded-lg shadow-md hover:bg-gray-300 transition"
     @click="applyPower(selectedCharacter.powerImg2)"
   >
@@ -175,6 +179,7 @@
     />
   </button>
 </div>
+
 
 
     </div>
@@ -191,6 +196,7 @@ const showLoseModal = ref(false); // Controls the lose modal visibility
 const countdown = ref(3); // Pre-game countdown
 const gameCountdown = ref(100); // In-game countdown
 const progress = ref(100); // Progress bar width
+const points = ref(0); // Track player points (starts at 0)
 let timerInterval; // Timer interval reference
 
 // Available colors (8 colors)
@@ -229,6 +235,7 @@ const checkRowMatch = () => {
       feedbackPegs[index] = 'green'; // Correct color and position
       secret[index] = null; // Remove from matching pool
       player[index] = null; // Mark as matched
+      points.value += 1; // Increase points for each green peg
     }
   });
 
@@ -347,3 +354,9 @@ const applyPower = (powerImage) => {
 };
 
 </script>
+<style>
+.grayscale {
+  filter: grayscale(100%);
+  pointer-events: none; /* Prevent hover effects when disabled */
+}
+</style>
