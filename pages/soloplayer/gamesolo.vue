@@ -79,8 +79,19 @@
       v-if="isGameStarted" 
       class="flex flex-col bg-purple-300 rounded-lg shadow-md border-2 border-black"
     >
-      <!-- Character Image and Timer -->
       <div class="flex items-center justify-between px-4 py-2">
+         <!-- Energy Points Display -->
+         <div class="flex flex-col items-center">
+    <p class="text-xl font-bold text-yellow-600">Energy</p>
+    <p class="text-2xl font-bold" 
+       :class="{
+         'text-green-600': energyPoints > 0,
+         'text-red-600': energyPoints === 0
+       }">
+      {{ energyPoints }}/{{ maxEnergyPoints }}
+    </p>
+  </div>
+
         <!-- Timer Countdown in the Center -->
         <h1 
           class="text-5xl font-bold text-center flex-1"
@@ -152,8 +163,8 @@
   <!-- Power 1 Button -->
   <button 
     v-if="selectedCharacter.powerImg1" 
-    :disabled="points < 3" 
-    :class="{ 'grayscale': points < 3 }"
+    :disabled="energyPoints < 3" 
+    :class="{ 'grayscale': energyPoints < 3 }"
     class="flex items-center justify-center w-32 h-32 bg-gray-200 border-2 border-black rounded-lg shadow-md hover:bg-gray-300 transition"
     @click="applyPower(selectedCharacter.powerImg1)"
   >
@@ -167,8 +178,8 @@
   <!-- Power 2 Button -->
   <button 
     v-if="selectedCharacter.powerImg2" 
-    :disabled="points < 5" 
-    :class="{ 'grayscale': points < 5 }"
+    :disabled="energyPoints < 5" 
+    :class="{ 'grayscale': energyPoints < 5 }"
     class="flex items-center justify-center w-32 h-32 bg-gray-200 border-2 border-black rounded-lg shadow-md hover:bg-gray-300 transition"
     @click="applyPower(selectedCharacter.powerImg2)"
   >
@@ -196,7 +207,8 @@ const showLoseModal = ref(false); // Controls the lose modal visibility
 const countdown = ref(3); // Pre-game countdown
 const gameCountdown = ref(100); // In-game countdown
 const progress = ref(100); // Progress bar width
-const points = ref(0); // Track player points (starts at 0)
+const maxEnergyPoints = 10;
+const energyPoints = ref(0);
 let timerInterval; // Timer interval reference
 
 // Available colors (8 colors)
@@ -217,14 +229,22 @@ const generateSecretCombination = () => {
   }
   console.log("Secret Combination:", secretCombination.value);
 };
+const addEnergyPoints = (pointsToAdd) => {
+  energyPoints.value = Math.min(energyPoints.value + pointsToAdd, maxEnergyPoints);
+};
 
+// Deduct energy points (no negative values)
+const deductEnergyPoints = (pointsToDeduct) => {
+  energyPoints.value = Math.max(energyPoints.value - pointsToDeduct, 0);
+};
 // Check if the current row matches the secret combination
 const checkRowMatch = () => {
   const start = currentRow.value * 4;
   const end = start + 4;
   const rowColors = colorGrid.value.slice(start, end);
   const feedbackPegs = Array(4).fill(null); // Initialize feedback for the current row
-
+  const greenPegCount = feedbackPegs.filter((peg) => peg === 'green').length;
+  addEnergyPoints(greenPegCount); // Add points for green pegs
   // Create copies for matching
   const secret = [...secretCombination.value];
   const player = [...rowColors];
@@ -235,7 +255,7 @@ const checkRowMatch = () => {
       feedbackPegs[index] = 'green'; // Correct color and position
       secret[index] = null; // Remove from matching pool
       player[index] = null; // Mark as matched
-      points.value += 1; // Increase points for each green peg
+      energyPoints.value += 1; // Increase points for each green peg
     }
   });
 
@@ -285,6 +305,7 @@ const restartGame = () => {
   gameCountdown.value = 100;
   countdown.value = 3;
   selectedCharacter.value = null; // Reset the selected character
+  energyPoints=0;
   generateSecretCombination();
 };
 
@@ -340,19 +361,14 @@ const startGameCountdown = () => {
 
 // Apply a power based on the provided image
 const applyPower = (powerImage) => {
-  if (powerImage === selectedCharacter.value.powerImg1) {
-    // Power 1: Add 5 seconds
-    gameCountdown.value = Math.min(gameCountdown.value + 5, 230); // Cap at the maximum game time
-    console.log("Power 1 activated! Added 5 seconds.");
-  } else if (powerImage === selectedCharacter.value.powerImg2) {
-    // Power 2: Add 15 seconds
-    gameCountdown.value = Math.min(gameCountdown.value + 15, 230); // Cap at the maximum game time
-    console.log("Power 2 activated! Added 15 seconds.");
-  } else {
-    console.warn("Unknown power activated.");
+  if (powerImage === selectedCharacter.value.powerImg1 && energyPoints.value >= 3) {
+    gameCountdown.value = Math.min(gameCountdown.value + 5, 230);
+    deductEnergyPoints(3); // Deduct 3 energy points
+  } else if (powerImage === selectedCharacter.value.powerImg2 && energyPoints.value >= 5) {
+    gameCountdown.value = Math.min(gameCountdown.value + 15, 230);
+    deductEnergyPoints(5); // Deduct 5 energy points
   }
 };
-
 </script>
 <style>
 .grayscale {
