@@ -1,14 +1,14 @@
 <template>
     <div class="tournament px-4 py-8 max-w-5xl mx-auto">
-      <h1 class="text-4xl font-bold mb-6 text-center text-blue-600">Game Modes</h1>
-      <p class="text-gray-700 text-center mb-8 text-lg">
+      <h1 class="text-4xl font-bold mb-6 text-center text-white">Game Modes</h1>
+      <p class="text-gray-900 text-center mb-8 text-lg">
         Select a mode to compete with other players!
       </p>
   
       <!-- Game Mode Selection -->
       <div class="flex items-center justify-evenly mb-12">
         <div class="p-6 bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition">
-          <h2 class="text-2xl font-semibold mb-4 text-gray-800">1 vs 1 Best of 3</h2>
+          <h2 class="text-2xl font-semibold mb-4 text-gray-800">1 vs 1</h2>
           <p class="text-gray-600 mb-6">Challenge another player to a quick match.</p>
           <button
             @click="createRoom('single')"
@@ -42,6 +42,17 @@
           </button>
         </div>
       </div>
+      <div class="lobby">
+    <h1 class="text-4xl font-bold">Game Lobby</h1>
+    <p class="text-gray-700">Welcome to the game lobby. Create a new game or join an existing one.</p>
+
+    <!-- Create Game Button -->
+    <div class="mt-4">
+      <button @click="createGame" class="bg-blue-500 text-white px-4 py-2 rounded">
+        Create New Game
+      </button>
+    </div>
+  </div>
   
       <!-- Room Controls -->
       <div class="room-controls text-center">
@@ -82,7 +93,9 @@
   
   import { ref, onMounted, onUnmounted } from 'vue';
   import { io } from 'socket.io-client';
-  
+  const supabase = useSupabaseClient();
+  const user = useSupabaseUser();
+
   const roomId = ref('');
   const socket = ref(null);
   const gameData = ref(null);
@@ -110,7 +123,7 @@
   }
   
   onMounted(() => {
-    socket.value = io('http://localhost:3000'); // Connect to Socket.io server
+    socket.value = io('http://localhost:4000'); // Connect to Socket.io server
     socket.value.on('updateGame', (data) => {
       gameData.value = data; // Update game data when receiving updates from the server
     });
@@ -124,6 +137,38 @@
   onUnmounted(() => {
     if (socket.value) socket.value.disconnect(); // Clean up socket connection on component unmount
   });
+
+  const createGame = async () => {
+  if (!user.value) {
+    alert('You must be logged in to create a game!');
+    return;
+  }
+
+  try {
+    // Create a new game record
+    const { data, error } = await supabase
+      .from('gametable')
+      .insert([
+        {
+          player1: user.value.id, // Assign current user as player 1
+          created_at: new Date() // Set creation date (optional if handled by database default)
+        }
+      ])
+      .select();
+
+    if (error) {
+      console.error('Error creating game:', error);
+      alert('Failed to create the game. Please try again.');
+      return;
+    }
+
+    console.log('Game created successfully:', data);
+    alert('Game created successfully! Game ID: ' + data[0].id);
+  } catch (err) {
+    console.error('Unexpected error:', err);
+    alert('An unexpected error occurred. Please try again.');
+  }
+};
   </script>
   
   <style scoped>

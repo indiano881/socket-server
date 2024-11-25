@@ -57,7 +57,7 @@
   
   <script setup>
   const user = useSupabaseUser()
-console.log(user)
+
   
   </script>
   
