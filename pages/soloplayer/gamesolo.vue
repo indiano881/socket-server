@@ -7,12 +7,20 @@
     >
       <div class="bg-white p-6 rounded-lg shadow-lg text-center">
         <h1 class="text-4xl font-bold text-green-600">You Win!</h1>
-        <p class="text-xl mt-4">Time left: <span class="font-bold">{{ gameCountdown }} seconds</span></p>
+        <div class="flex justify-center space-x-2 mt-4">
+          <div 
+            v-for="(color, index) in secretCombination" 
+            :key="'secret-' + index" 
+            class="w-10 h-10 rounded-full"
+            :style="{ backgroundColor: color }"
+          ></div>
+        </div>
+        <p class="text-xl mt-4 text-gray-900">Time left: <span class="font-bold">{{ gameCountdown }} seconds</span></p>
         <button 
           class="bg-green-500 text-white px-6 py-2 rounded-lg mt-4 hover:bg-green-600"
           @click="restartGame"
         >
-          Play Again
+          Back to lobby
         </button>
       </div>
     </div>
@@ -180,8 +188,8 @@
   </button>
 </div>
  <!-- Buttons for Selecting Colors -->
- <div class="grid grid-cols-3 gap-2 mt-2">
-  <button 
+  <div class="grid grid-cols-3 gap-2 mt-2">
+    <button 
     v-for="(color, index) in availableColors" 
     :key="'button-' + index" 
     class="w-12 h-12 rounded-full shadow-md focus:outline-none hover:ring-2 hover:ring-gray-500 transition border-2 border-black"
@@ -189,16 +197,10 @@
     @click="addColorToGrid(color)"
   >
     <!-- Color buttons -->
-  </button>
-</div>
+    </button>
+  </div>
 
       </div>
-
-     
-
-
-
-
 
     </div>
   </div>

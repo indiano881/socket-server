@@ -8,13 +8,13 @@
           class="p-4 border rounded-lg shadow-md hover:shadow-lg transition-shadow"
         >
           <img :src="character.image" :alt="character.name" class="w-26 h-auto object-cover rounded-t-md mb-4">
-          <h2 class="text-2xl font-semibold text-gray-700 mb-2">{{ character.name }}</h2>
-          <p class="text-gray-600 mb-4">{{ character.description }}</p>
+          <h2 class="text-2xl font-semibold text-gray-900 mb-2">{{ character.name }}</h2>
+          <p class="text-gray-700 mb-4">{{ character.description }}</p>
           <div class="space-y-2">
-            <h3 class="text-lg font-medium text-gray-800">Powers:</h3>
+            <h3 class="text-lg font-medium text-gray-900">Powers:</h3>
             <ul>
-              <li v-for="(power, index) in character.powers" :key="index" class="mb-2">
-                <strong>{{ power.name }}:</strong> {{ power.description }}
+              <li v-for="(power, index) in character.powers" :key="index" class="mb-2 flex flex-col text-gray-700">
+                <span class="text-gray-700 font-semibold">{{ power.name }}:</span>{{ power.description }}
                 <img :src="power.image" :alt="power.name" class="w-12 h-auto object-cover rounded-md mt-2">
               </li>
             </ul>
