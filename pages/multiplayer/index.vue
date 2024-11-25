@@ -2,9 +2,18 @@
     <div class="p-8 max-w-5xl mx-auto bg-white rounded-xl shadow-md space-y-6 my-4 border-4 border-greynav">
       <h1 class="text-4xl font-bold text-gray-800 text-center">Multiplayer Mode</h1>
       <div class="pt-6 flex justify-center">
-        <button @click="startMultiplayerGame" class="bg-green-500 text-white text-4xl px-8 py-4 rounded-lg hover:bg-green-600 transition duration-300 border-2 border-black">
+        <NuxtLink v-if="user" href="/multiplayer/lobby" class="bg-green-500 text-white text-4xl px-8 py-4 rounded-lg hover:bg-green-600 transition duration-300 border-2 border-black">
           Multiplayer Game
-        </button>
+        </NuxtLink>
+        <div v-if="!user" class="flex flex-col">To acces multiplayer lobby room you need to either: 
+        <NuxtLink href="/login"  class="bg-yellow-500 text-white text-4xl px-8 py-4 rounded-lg hover:bg-green-600 transition duration-300 border-2 border-black">
+          Log in
+        </NuxtLink> 
+        <p>OR </p>
+        <NuxtLink href="/register"  class="bg-blue-500 text-white text-4xl px-8 py-4 rounded-lg hover:bg-green-600 transition duration-300 border-2 border-black">
+          Register
+        </NuxtLink> 
+      </div>
       </div>
       <section class="space-y-4">
         <h2 class="text-2xl font-semibold text-gray-700">Overview</h2>
@@ -46,16 +55,10 @@
     </div>
   </template>
   
-  <script>
-  export default {
-    name: 'MultiplayerPage',
-    methods: {
-      startMultiplayerGame() {
-        console.log('Multiplayer game started!');
-        // Code to start the multiplayer game can be implemented here
-      }
-    }
-  };
+  <script setup>
+  const user = useSupabaseUser()
+console.log(user)
+  
   </script>
   
   
