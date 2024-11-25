@@ -65,7 +65,7 @@
 
     <!-- Ready Button -->
     <div 
-      v-if="!isGameStarted && !isCountdownRunning" 
+      v-if="selectedCharacter&& !isGameStarted && !isCountdownRunning" 
       class="flex flex-col items-center"
     >
       <button 

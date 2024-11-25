@@ -139,6 +139,7 @@ const closeModal = () => {
           :key="option.id" 
           @click="handleSelection(option)"
           class="flex items-center"
+          :class="{ 'cursor-not-allowed text-gray-400': option.id === -1 }"
         >
           <img 
             v-if="option.icon" 
@@ -276,6 +277,13 @@ p{
   color:#e8f8ff; 
   transition:all 0.3s;
 }
+
+.menu li.cursor-not-allowed {
+  pointer-events: none; 
+  opacity: 0.5; 
+}
+
+
 .menu li:hover{
   background:#6efd61;
   color: black;
