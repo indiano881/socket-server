@@ -1,0 +1,53 @@
+Wolverine
+Regeneration
+"Instantly restore up to 3 guesses if you lose a turn, ensuring your survival in the game longer."
+(Visualize Wolverine healing with glowing energy.)
+
+Adamantium Claws
+"Reveals one exact color and position in the secret combination, slicing through the mystery."
+(Visualize a glowing claw slashing through puzzle tiles.)
+
+Super Mario
+Super Jump
+"Skip over the current row, letting you start fresh on the next attempt with 2 extra hints."
+(Visualize Mario jumping over a puzzle row.)
+
+Fireball
+"Burn away two incorrect colors from the pool, narrowing down your options."
+(Visualize fireballs removing tiles or colors.)
+
+Heisenberg
+Chemistry Expertise
+"Reveal all colors in the correct combination but not their positions, giving you a powerful clue."
+(Visualize a swirling beaker revealing glowing colors.)
+
+Master Strategist
+"Switch the positions of two pegs in your guess to instantly validate if they're correct."
+(Visualize chess pieces moving on a puzzle grid.)
+
+Jigsaw
+Trap Creation
+"Set a trap to lock one correct color in its position, ensuring it cannot be removed in future guesses."
+(Visualize puzzle tiles locking into place with a mechanical sound.)
+
+Psychological Manipulation
+"Force an automatic hint reveal by deducting one turn from your total attempts."
+(Visualize chains pulling a hint tile into view.)
+
+Freddy Krueger
+Dream Manipulation
+"Scramble the current guess to randomly rearrange colors, possibly solving part of the puzzle."
+(Visualize a swirling vortex moving tiles around.)
+
+Immortality in Dreams
+"Resurrect one lost turn, giving you another chance to crack the code."
+(Visualize Freddy pulling a turn counter back from a fading mist.)
+
+Flash
+Super Speed
+"Instantly skip to the next row while revealing the number of correctly placed colors."
+(Visualize a blur revealing glowing hints.)
+
+Speed Force Manipulation
+"Undo your last move and reattempt the same row without penalty."
+(Visualize a glowing rewind effect over the puzzle board.)
