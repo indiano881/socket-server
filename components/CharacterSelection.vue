@@ -178,7 +178,7 @@ const closeModal = () => {
     <!-- Modal -->
     <div v-if="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div class="bg-white rounded-lg shadow-lg p-6 w-80 text-center">
-        <h3 class="text-lg font-bold mb-2">{{ selectedPower.name }}</h3>
+        <h3 class="text-lg text-black font-bold mb-2">{{ selectedPower.name }}</h3>
         <p class="text-sm text-gray-900">{{ selectedPower.description }}</p>
         <button @click="closeModal" class="mt-4 bg-yellow-400 text-black px-4 py-2 rounded hover:bg-yellow-500">
           Close
