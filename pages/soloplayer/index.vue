@@ -1,7 +1,11 @@
 <template>
   <div class="p-8 max-w-5xl mx-auto bg-white rounded-xl shadow-md space-y-6 my-4 border-4 border-greynav">
     <h1 class="text-4xl font-bold text-gray-800 text-center">Practice mode as solo game</h1>
-    
+    <div class="pt-6 flex flex-col items-center">
+      <NuxtLink href="/soloplayer/gamesolo" class="bg-blue-500 text-white text-xl px-8 py-4 rounded-lg hover:bg-blue-600 transition duration-300 border-2 border-black text-center md:text-4xl md:w-[70%]">
+        Start Solo Game
+      </NuxtLink>
+    </div>
     <section class="space-y-4">
       <h2 class="text-2xl font-semibold text-gray-900">Overview</h2>
       <p class="text-gray-700">
@@ -17,7 +21,7 @@
         <li>Receive feedback after each attempt:
           <ul class="list-disc list-inside ml-6 text-gray-700">
             <li><span class="text-green-600 font-bold">Green peg:</span> Right color and right position.</li>
-            <li><span class="text-yellow-600 font-bold">Yellow peg:</span> Right color but wrong position.</li>
+            <li><span class="text-gray-600 font-bold">Grey peg:</span> Right color but wrong position.</li>
           </ul>
         </li>
         <li>Continue guessing until you either solve the code or run out of attempts.</li>
@@ -39,8 +43,8 @@
     </section>
 
     <div class="pt-6 flex flex-col items-center">
-      <NuxtLink href="/soloplayer/gamesolo" class="bg-green-500 text-white text-3xl px-8 py-4 rounded-lg hover:bg-green-600 transition duration-300 border-2 border-black text-center md:text-4xl md:w-[70%]">
-        Start Practice Mode
+      <NuxtLink href="/soloplayer/gamesolo" class="bg-blue-500 text-white text-xl px-8 py-4 rounded-lg hover:bg-blue-600 transition duration-300 border-2 border-black text-center md:text-4xl md:w-[70%]">
+        Start Solo Game
       </NuxtLink>
     </div>
   </div>

@@ -50,13 +50,12 @@ const isLoggedIn = computed(() => user.value !== null)
       <nav v-show="menuOpen" class="nav" :class="{ 'sp-menu': buttonShow }">
         <ul class="flex flex-col md:flex-row">
           <li class="n1 p-2 md:pr-4"><NuxtLink href="/" @click="closeMenu">What is Nuxtermind?</NuxtLink></li>
-          <li class="n1 p-2 md:pr-4"><NuxtLink href="/gamerules" @click="closeMenu">Rules</NuxtLink></li>
-          <li class="n1 p-2 md:pr-4"><NuxtLink href="/soloplayer" @click="closeMenu">Practice Mode</NuxtLink></li>
-          <li class="n1 p-2 md:pr-4"><NuxtLink href="/characters" @click="closeMenu">Char</NuxtLink></li> 
-          <li class="n1 p-2 md:pr-4"><NuxtLink href="/multiplayer" @click="closeMenu" class="bg-green-500 border-2 border-white px-2 rounded-xl hover:bg-green-600 transition duration-300">Multiplayer</NuxtLink></li>
+          <li class="n1 p-2 md:pr-4"><NuxtLink href="/gamerules" @click="closeMenu">About the game</NuxtLink></li>
+          <li class="n1 p-2 md:pr-4"><NuxtLink href="/soloplayer" @click="closeMenu">Single player</NuxtLink></li>
+          <li class="n1 md:p-2 pb-2 md:pr-4"><NuxtLink href="/multiplayer" @click="closeMenu" class="bg-green-500 border-2 border-white px-2 rounded-xl hover:bg-green-600 transition duration-300">Multiplayer</NuxtLink></li>
           <li v-if="!isLoggedIn" class="n1 p-2 md:pr-4 "><NuxtLink href="/login" @click="closeMenu" class="bg-yellow-500 border-2 border-white px-2 rounded-xl hover:bg-yellow-600 transition duration-300">Login</NuxtLink></li>
           <li v-if="!isLoggedIn" class="n1 p-2 md:pr-4"><NuxtLink href="/register" @click="closeMenu" class="bg-blue-500 border-2 text-white border-white px-2 rounded-xl hover:bg-blue-600 transition duration-300">Register</NuxtLink></li>
-          <li v-if="isLoggedIn" class="n1 md:p-2 md:pr-4"><Logout /></li>
+          <li v-if="isLoggedIn" class="n1 p-2 md:pr-4"><Logout /></li>
         </ul>
       </nav>
     </transition>

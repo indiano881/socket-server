@@ -1,11 +1,11 @@
 <template>
-    <div class="p-8 max-w-6xl mx-auto bg-white rounded-xl shadow-md space-y-6 my-4 border-4 border-greynav">
+    <div class="p-8 max-w-6xl mx-auto bg-white  space-y-6 my-4 ">
       <h1 class="text-4xl font-bold text-gray-800 text-center">Character Gallery</h1>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <div 
           v-for="character in Characters" 
           :key="character.id" 
-          class="p-4 border rounded-lg shadow-md hover:shadow-lg transition-shadow"
+          class="p-4 border-2 rounded-xl border-graynav"
         >
           <img :src="character.image" :alt="character.name" class="w-26 h-auto object-cover rounded-t-md mb-4">
           <h2 class="text-2xl font-semibold text-gray-900 mb-2">{{ character.name }}</h2>

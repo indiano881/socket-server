@@ -5,7 +5,20 @@
     <p class="text-gray-800">
       Nuxtermind is a modern twist on the classic Mastermind game, reimagined for the digital age with enhanced gameplay and interactive features.
     </p>
-    
+
+    <div class="flex flex-col pt-4 items-center">
+      <NuxtLink href="/soloplayer/gamesolo" class="flex justify-center bg-blue-500 text-white text-4xl px-8 py-4 rounded-lg hover:bg-blue-600 transition duration-300 border-2 border-black md:w-[70%] min-w-[305px]">
+        Single player
+      </NuxtLink>
+    </div>
+    <div>
+    </div>
+    <div class="flex flex-col pt-4 items-center">
+      <NuxtLink href="/multiplayer" class="flex justify-center bg-green-500 text-white text-4xl px-8 py-4 rounded-lg hover:bg-green-600 transition duration-300 border-2 border-black md:w-[70%] min-w-[305px]">
+        Multiplayer
+      </NuxtLink>
+    </div>
+
     <div class="space-y-2">
       <h2 class="text-2xl font-semibold text-gray-900">Key Features</h2>
       <ul class="list-disc list-inside text-gray-800">
@@ -16,11 +29,7 @@
       </ul>
     </div>
 
-    <div class="flex flex-col pt-4 items-center">
-      <NuxtLink href="/multiplayer" class="flex justify-center bg-green-500 text-white text-4xl px-8 py-4 rounded-lg hover:bg-green-600 transition duration-300 border-2 border-black md:w-[70%]">
-        Play Now
-      </NuxtLink>
-    </div>
+    
   </div>
 </template>
 
