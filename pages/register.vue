@@ -113,7 +113,7 @@ const signUp = async () => {
     setTimeout(async () => {
       succesMsg.value = false
       await navigateTo('/multiplayer')
-    }, 2000)
+    }, 1000)
   } catch (err) {
     console.error('Unexpected error:', err)
     errorMsg.value = 'An unexpected error occurred. Please try again.'

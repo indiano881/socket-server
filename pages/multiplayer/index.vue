@@ -6,11 +6,11 @@
           Multiplayer Game
         </NuxtLink>
         <div v-if="!user" class="flex flex-col">To acces multiplayer lobby room you need to either: 
-        <NuxtLink href="/login"  class="bg-yellow-500 text-white text-4xl px-8 py-4 rounded-lg hover:bg-green-600 transition duration-300 border-2 border-black">
+        <NuxtLink href="/login"  class="bg-yellow-500 text-white text-4xl px-8 py-4 rounded-lg hover:bg-yellow-600 transition duration-300 border-2 border-black">
           Log in
         </NuxtLink> 
         <p>OR </p>
-        <NuxtLink href="/register"  class="bg-blue-500 text-white text-4xl px-8 py-4 rounded-lg hover:bg-green-600 transition duration-300 border-2 border-black">
+        <NuxtLink href="/register"  class="bg-blue-500 text-white text-4xl px-8 py-4 rounded-lg hover:bg-blue-600 transition duration-300 border-2 border-black">
           Register
         </NuxtLink> 
       </div>

@@ -75,6 +75,6 @@ const logIn = async () => {
     setTimeout(async () => {
         succesMsg.value = false
         await navigateTo('/multiplayer')
-    }, 2000)
+    }, 1000)
 }
 </script>
