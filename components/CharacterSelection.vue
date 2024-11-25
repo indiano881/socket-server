@@ -2,7 +2,6 @@
 import { ref } from 'vue';
 import { Characters } from '@/assets/data/character.ts'; // Import your Characters
 
-
 const emit = defineEmits(['characterSelected']);
 // Manage dropdown visibility
 const showMenu = ref(false);
@@ -12,6 +11,31 @@ const toggleMenu = () => {
   showMenu.value = !showMenu.value;
 };
 
+// Add Characters to the dropdown options
+const options = [
+  {
+    id: -1, // Placeholder ID
+    label: 'Choose Character',
+    icon: null, // No image for placeholder
+    description: '',
+    category: '',
+    powerImg1: null,
+    powerImg2: null,
+  },
+  ...Characters.map((character) => ({
+    id: character.id,
+    label: character.name,
+    icon: character.image,
+    description: character.description,
+    category: character.category,
+    powerImg1: character.powers[0]?.image,
+    powerImg2: character.powers[1]?.image,
+  })),
+];
+
+// Default selection is the placeholder
+const selectedOption = ref(options[0]);
+
 // Handle option selection
 const handleSelection = (option) => {
   selectedOption.value = option;
@@ -20,32 +44,69 @@ const handleSelection = (option) => {
   emit('characterSelected', option);
 };
 
-// Default options
+// Game states
+const isCountdownRunning = ref(false);
+const isGameStarted = ref(false);
+const countdown = ref(3); // Pre-game countdown
+const gameCountdown = ref(100); // In-game countdown
+const progress = ref(100); // Progress bar width
+let timerInterval; // Timer interval reference
 
+// Start the pre-game countdown
+const startCountdown = () => {
+  if (selectedOption.value.id === -1) {
+    alert('Please select a character to start the game!');
+    return;
+  }
 
-// Add Characters to the dropdown options
-const options = [ ...Characters.map((character) => ({
-  id: character.id,
-  label: character.name,
-  icon: character.image,
-  description: character.description,
-  category: character.category,
-  powerImg1: character.powers[0].image,
-  powerImg2: character.powers[1].image,
-}))];
+  isCountdownRunning.value = true;
+  const interval = setInterval(() => {
+    countdown.value -= 1;
+    if (countdown.value === 0) {
+      clearInterval(interval);
+      isCountdownRunning.value = false;
+      isGameStarted.value = true;
+      generateSecretCombination();
+      startGameCountdown();
+    }
+  }, 1000);
+};
 
-const selectedOption = ref(options[0]); // Default selection
+// Start the in-game countdown and manage the progress bar
+const startGameCountdown = () => {
+  const totalGameTime = 230;
+  timerInterval = setInterval(() => {
+    gameCountdown.value -= 1;
+    progress.value = (gameCountdown.value / totalGameTime) * 100;
+    if (gameCountdown.value <= 0) {
+      clearInterval(timerInterval);
+      alert('Time is up! You lost the game!');
+    }
+  }, 1000);
+};
+
+// Generate a random secret combination
+const availableColors = ['red', 'blue', 'green', 'yellow', 'purple', 'orange', 'pink', 'cyan'];
+const secretCombination = ref([]);
+
+const generateSecretCombination = () => {
+  secretCombination.value = [];
+  for (let i = 0; i < 4; i++) {
+    const randomIndex = Math.floor(Math.random() * availableColors.length);
+    secretCombination.value.push(availableColors[randomIndex]);
+  }
+  console.log("Secret Combination:", secretCombination.value);
+};
+
 // Manage modal visibility
 const showModal = ref(false);
 const selectedPower = ref({ name: '', description: '' });
 
-// Open the modal with power details
 const openPowerModal = (power) => {
   selectedPower.value = power;
   showModal.value = true;
 };
 
-// Close the modal
 const closeModal = () => {
   showModal.value = false;
 };
@@ -53,12 +114,14 @@ const closeModal = () => {
 
 
 
+
+
 <template>
-    <div class="flex flex-col items-center">
+  <div class="flex flex-col items-center">
     <div class="dropholder">
       <p>Select</p>
       <div class="dropdown" @click="toggleMenu">
-        <p class="flex">
+        <p class="flex items-center">
           <img 
             v-if="selectedOption.icon" 
             :src="selectedOption.icon" 
@@ -88,28 +151,29 @@ const closeModal = () => {
           {{ option.label }}
         </li>
       </ul>
-      <!-- Display selected character name -->
-    
     </div>
-    <div v-if="selectedOption" class="mt-10 text-center flex flex-col items-center">
-    <img :src="selectedOption.icon" :alt="selectedOption.label" width="180px" height="auto" />
-    <h2 class="text-xl text-black font-bold">{{ selectedOption.label }}</h2>
-    <h2 class="text-md text-black font-bold">Category: {{ selectedOption.category }}</h2>
-    <h2 class="text-sm text-black italic">{{ selectedOption.description }}</h2>
-    
-    <div class="flex gap-4 mt-6">
-      <img 
-        v-for="(power, index) in Characters.find(char => char.id === selectedOption.id)?.powers.slice(0, 2)" 
-        :key="index" 
-        :src="power.image" 
-        :alt="power.name" 
-        width="60px" 
-        height="auto" 
-        class="cursor-pointer" 
-        @click="openPowerModal(power)" 
-      />
+
+    <!-- Display selected character details only if a character is selected -->
+    <div v-if="selectedOption.id !== -1" class="mt-10 text-center flex flex-col items-center">
+      <img :src="selectedOption.icon" :alt="selectedOption.label" width="180px" height="auto" />
+      <h2 class="text-xl text-black font-bold">{{ selectedOption.label }}</h2>
+      <h2 class="text-md text-black font-bold">Category: {{ selectedOption.category }}</h2>
+      <h2 class="text-sm text-black italic">{{ selectedOption.description }}</h2>
+
+      <div class="flex gap-4 mt-6">
+        <img 
+          v-for="(power, index) in Characters.find(char => char.id === selectedOption.id)?.powers.slice(0, 2)" 
+          :key="index" 
+          :src="power.image" 
+          :alt="power.name" 
+          width="60px" 
+          height="auto" 
+          class="cursor-pointer" 
+          @click="openPowerModal(power)" 
+        />
+      </div>
     </div>
-    
+
     <!-- Modal -->
     <div v-if="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div class="bg-white rounded-lg shadow-lg p-6 w-80 text-center">
@@ -121,8 +185,8 @@ const closeModal = () => {
       </div>
     </div>
   </div>
-</div>
-  </template>
+</template>
+
   
   <style scoped>
  
