@@ -447,7 +447,7 @@ const applyPower = (powerName) => {
       console.warn("No remaining hints to reveal.");
     }
   }
-  break;
+  break;/* NOT WORKING PROPERLY
   case "triple-energy": // Triple energy point gain for a limited time
   if (energyPoints.value >= 2) {
     console.log("Activating triple-energy power...");
@@ -473,7 +473,7 @@ const applyPower = (powerName) => {
   } else {
     console.log("Not enough energy points to activate triple-energy power.");
   }
-  break;
+  break;*/
 
     default:
       console.warn(`No effect defined for power: ${powerImage.name}`);
