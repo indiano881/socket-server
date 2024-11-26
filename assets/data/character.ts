@@ -26,12 +26,12 @@ export const Characters: CharacterType[] = [
     description: "Wolverine is a powerful mutant known for his regenerative healing ability and adamantium claws.",
     powers: [
       {
-        name: "Regeneration",
+        name: "reveal-hint",
         description: "Instantly restore up to 3 guesses if you lose a turn, ensuring your survival in the game longer.",
-        image: "/images/powers/power-hearth.svg"
+        image: "/images/powers/power-detective.svg"
       },
       {
-        name: "Adamantium Claws",
+        name: "time-plus-five",
         description: "Reveals one exact color and position in the secret combination, slicing through the mystery.",
         image: "/images/powers/power-time.svg"
       }

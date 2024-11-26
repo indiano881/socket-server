@@ -76,7 +76,26 @@
         Ready???
       </button>
     </div>
-
+    <div 
+  v-if="showHintModal" 
+  class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
+>
+  <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+    <h1 class="text-4xl font-bold text-blue-600">Hint</h1>
+    <p class="text-xl mt-4 text-gray-900">
+      A color in the secret combination is 
+      <span class="font-bold" :style="{ color: hintModal.color }">{{ hintModal.color }}</span> 
+      at position 
+      <span class="font-bold">{{ hintModal.position }}</span>.
+    </p>
+    <button 
+      class="bg-blue-500 text-white px-6 py-2 rounded-lg mt-4 hover:bg-blue-600"
+      @click="showHintModal = false"
+    >
+      Close
+    </button>
+  </div>
+</div>
     <!-- Countdown Before Game Starts -->
     <div v-if="isCountdownRunning" class="flex justify-center items-center h-96">
       <h1 class="text-9xl font-bold text-yellow-400">{{ countdown }}</h1>
@@ -219,6 +238,9 @@ const progress = ref(100); // Progress bar width
 const maxEnergyPoints = 10;
 const energyPoints = ref(0);
 let timerInterval; // Timer interval reference
+const showHintModal = ref(false); // Controls the visibility of the hint modal
+const hintModal = ref({ color: "", position: 0 }); // Stores the hint information
+
 
 // Available colors (8 colors)
 const availableColors = ['red', 'blue', 'green', 'yellow', 'purple', 'orange', 'pink', 'cyan', 'brown'];
@@ -315,6 +337,8 @@ const restartGame = () => {
   countdown.value = 3;
   selectedCharacter.value = null; // Reset the selected character
   energyPoints.value=0;
+  showHintModal = ref(false); // Controls the visibility of the hint modal
+  hintModal = ref({ color: "", position: 0 }); // Stores the hint information
   generateSecretCombination();
 };
 
@@ -391,26 +415,25 @@ const applyPower = (powerName) => {
   }
   break;
 
-    case "revealColor": // Reveal a single color from the secret combination
-      if (energyPoints.value >= 4) {
-        const unrevealedIndex = colorGrid.value.findIndex(
-          (color, idx) =>
-            color === "white" && idx < secretCombination.value.length
-        );
-        if (unrevealedIndex !== -1) {
-          colorGrid.value[unrevealedIndex] =
-            secretCombination.value[unrevealedIndex];
-        }
-        deductEnergyPoints(4);
-      }
-      break;
+  case "reveal-hint": // Reveal a random color and position from the secret combination
+  if (energyPoints.value >= 4) {
+    const unrevealedIndices = secretCombination.value.map((color, index) => {
+      return { color, index };
+    }).filter(({ index }) => !colorGrid.value.includes(secretCombination.value[index]));
 
-    case "resetEnergy": // Restore energy points
-      if (energyPoints.value >= 2) {
-        energyPoints.value = maxEnergyPoints;
-        deductEnergyPoints(2);
-      }
-      break;
+    if (unrevealedIndices.length > 0) {
+      const randomHint = unrevealedIndices[Math.floor(Math.random() * unrevealedIndices.length)];
+      hintModal.value = {
+        color: randomHint.color,
+        position: randomHint.index + 1 // Convert to 1-based index for user readability
+      };
+      showHintModal.value = true; // Show the modal
+      deductEnergyPoints(4); // Deduct 4 energy points
+    } else {
+      console.warn("No remaining hints to reveal.");
+    }
+  }
+  break;
 
     default:
       console.warn(`No effect defined for power: ${powerImage.name}`);
