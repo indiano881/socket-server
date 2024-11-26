@@ -21,6 +21,8 @@ const options = [
     category: '',
     powerImg1: null,
     powerImg2: null,
+    powerName1: '',
+    powername2: ''
   },
   ...Characters.map((character) => ({
     id: character.id,
@@ -30,6 +32,8 @@ const options = [
     category: character.category,
     powerImg1: character.powers[0]?.image,
     powerImg2: character.powers[1]?.image,
+    powerName1: character.powers[0]?.name,
+    powerName2: character.powers[1]?.name
   })),
 ];
 

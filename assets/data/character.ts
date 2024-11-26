@@ -131,7 +131,7 @@ export const Characters: CharacterType[] = [
         image: "/images/powers/five-plus.svg"
       },
       {
-        name: "time-plus",
+        name: "time-plus-random",
         description: "Undo your last move and reattempt the same row without penalty.",
         image: "/images/powers/time-plus.svg"
       }

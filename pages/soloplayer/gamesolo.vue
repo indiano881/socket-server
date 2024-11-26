@@ -163,7 +163,7 @@
     :disabled="energyPoints < 3" 
     :class="{ 'grayscale': energyPoints < 3 }"
     class="flex items-center justify-center w-20 h-20 bg-white border-2 border-black rounded-full  hover:bg-gray-300 transition"
-    @click="applyPower(selectedCharacter.powerImg1)"
+    @click="applyPower(selectedCharacter.powerName1)"
   >
     <img 
       :src="selectedCharacter.powerImg1" 
@@ -178,7 +178,7 @@
     :disabled="energyPoints < 5" 
     :class="{ 'grayscale': energyPoints < 5 }"
     class="flex items-center justify-center w-20 h-20 bg-white border-2 border-black rounded-full  hover:bg-gray-300 transition"
-    @click="applyPower(selectedCharacter.powerImg2)"
+    @click="applyPower(selectedCharacter.powerName2)"
   >
     <img 
       :src="selectedCharacter.powerImg2" 
@@ -337,7 +337,7 @@ const addColorToGrid = (color) => {
 // Handle the emitted event
 const onCharacterSelected = (character) => {
   selectedCharacter.value = character;
-  console.log(character.powerImg1)
+  console.log(character)
 };
 
 // Start the pre-game countdown
@@ -369,13 +369,13 @@ const startGameCountdown = () => {
 };
 
 // Apply a power based on the provided image's name
-const applyPower = (powerImage) => {
-  if (!powerImage || !powerImage.name) {
+const applyPower = (powerName) => {
+  if (!powerName) {
     console.warn("Invalid power image or name.");
     return;
   }
 
-  switch (powerImage.name) {
+  switch (powerName) {
     case "time-plus-five": // Add small time extension
       if (energyPoints.value >= 5) {
         gameCountdown.value = Math.min(gameCountdown.value + 5, 100);
@@ -383,7 +383,7 @@ const applyPower = (powerImage) => {
       }
       break;
 
-      case "time-plus": // Add random time extension (3 to 10 seconds)
+      case "time-plus-random": // Add random time extension (3 to 10 seconds)
   if (energyPoints.value >= 5) {
     const randomTime = Math.floor(Math.random() * (10 - 3 + 1)) + 3; // Random number between 3 and 10
     gameCountdown.value = Math.min(gameCountdown.value + randomTime, 230);
