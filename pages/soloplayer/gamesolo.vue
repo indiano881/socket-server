@@ -201,8 +201,8 @@
   <!-- Power 2 Button -->
   <button 
     v-if="selectedCharacter.powerImg2" 
-    :disabled="energyPoints < 2" 
-    :class="{ 'grayscale': energyPoints < 2 }"
+    :disabled="energyPoints < 3" 
+    :class="{ 'grayscale': energyPoints < 3 }"
     class="flex items-center justify-center w-20 h-20 bg-white border-2 border-black rounded-full  hover:bg-gray-300 transition"
     @click="applyPower(selectedCharacter.powerName2)"
   >
@@ -243,7 +243,7 @@ const countdown = ref(3); // Pre-game countdown
 const gameCountdown = ref(100); // In-game countdown
 const progress = ref(100); // Progress bar width
 const maxEnergyPoints = 10;
-const energyPoints = ref(0);
+const energyPoints = ref(3);
 let timerInterval; // Timer interval reference
 const showHintModal = ref(false); // Controls the visibility of the hint modal
 const hintModal = ref({ color: "", position: 0 }); // Stores the hint information
@@ -348,7 +348,7 @@ const restartGame = () => {
   gameCountdown.value = 100;
   countdown.value = 3;
   selectedCharacter.value = null; // Reset the selected character
-  energyPoints.value=0;
+  energyPoints.value=3;
   showHintModal = ref(false); // Controls the visibility of the hint modal
   hintModal = ref({ color: "", position: 0 }); // Stores the hint information
   energyMultiplier = ref(1); // Default multiplier (normal speed)
@@ -395,7 +395,7 @@ const startCountdown = () => {
 
 // Start the in-game countdown and manage the progress bar
 const startGameCountdown = () => {
-  const totalGameTime = 230;
+  const totalGameTime = 100;
   timerInterval = setInterval(() => {
     gameCountdown.value -= 1;
     progress.value = (gameCountdown.value / totalGameTime) * 100;
@@ -415,37 +415,35 @@ const applyPower = (powerName) => {
 
   switch (powerName) {
     case "time-plus-five": // Add small time extension
-      if (energyPoints.value >= 5) {
+      if (energyPoints.value >= 3) {
         gameCountdown.value = Math.min(gameCountdown.value + 5, 100);
-        deductEnergyPoints(5); // Deduct 3 energy points
+        deductEnergyPoints(3); // Deduct 3 energy points
       }
       break;
 
       case "time-plus-random": // Add random time extension (3 to 10 seconds)
-  if (energyPoints.value >= 5) {
+  if (energyPoints.value >=3) {
     const randomTime = Math.floor(Math.random() * (10 - 3 + 1)) + 3; // Random number between 3 and 10
-    gameCountdown.value = Math.min(gameCountdown.value + randomTime, 230);
-    deductEnergyPoints(5); // Deduct 5 energy points
+    gameCountdown.value = Math.min(gameCountdown.value + randomTime, 100);
+    deductEnergyPoints(3); // Deduct 5 energy points
   }
   break;
 
   case "reveal-hint": // Reveal a random color and position from the secret combination
-  if (energyPoints.value >= 4) {
+  if (energyPoints.value >= 3) {
     const unrevealedIndices = secretCombination.value.map((color, index) => {
       return { color, index };
     }).filter(({ index }) => !colorGrid.value.includes(secretCombination.value[index]));
 
-    if (unrevealedIndices.length > 0) {
+    
       const randomHint = unrevealedIndices[Math.floor(Math.random() * unrevealedIndices.length)];
       hintModal.value = {
         color: randomHint.color,
         position: randomHint.index + 1 // Convert to 1-based index for user readability
       };
       showHintModal.value = true; // Show the modal
-      deductEnergyPoints(4); // Deduct 4 energy points
-    } else {
-      console.warn("No remaining hints to reveal.");
-    }
+      deductEnergyPoints(3); // Deduct 4 energy points
+   
   }
   break;/* NOT WORKING PROPERLY
   case "triple-energy": // Triple energy point gain for a limited time
