@@ -96,6 +96,13 @@
     </button>
   </div>
 </div>
+<div 
+  v-if="energyBoostActive" 
+  class="fixed top-4 right-4 bg-yellow-300 text-black p-4 rounded-lg shadow-lg"
+>
+  <p class="font-bold">Energy Boost Active!</p>
+  <p>Triple energy gain for 15 seconds.</p>
+</div>
     <!-- Countdown Before Game Starts -->
     <div v-if="isCountdownRunning" class="flex justify-center items-center h-96">
       <h1 class="text-9xl font-bold text-yellow-400">{{ countdown }}</h1>
@@ -194,8 +201,8 @@
   <!-- Power 2 Button -->
   <button 
     v-if="selectedCharacter.powerImg2" 
-    :disabled="energyPoints < 5" 
-    :class="{ 'grayscale': energyPoints < 5 }"
+    :disabled="energyPoints < 2" 
+    :class="{ 'grayscale': energyPoints < 2 }"
     class="flex items-center justify-center w-20 h-20 bg-white border-2 border-black rounded-full  hover:bg-gray-300 transition"
     @click="applyPower(selectedCharacter.powerName2)"
   >
@@ -240,6 +247,8 @@ const energyPoints = ref(0);
 let timerInterval; // Timer interval reference
 const showHintModal = ref(false); // Controls the visibility of the hint modal
 const hintModal = ref({ color: "", position: 0 }); // Stores the hint information
+const energyMultiplier = ref(1); // Default multiplier (normal speed)
+const energyBoostActive = ref(false); // Tracks if the boost is active
 
 
 // Available colors (8 colors)
@@ -261,7 +270,10 @@ const generateSecretCombination = () => {
   console.log("Secret Combination:", secretCombination.value);
 };
 const addEnergyPoints = (pointsToAdd) => {
-  energyPoints.value = Math.min(energyPoints.value + pointsToAdd, maxEnergyPoints);
+  energyPoints.value = Math.min(
+    energyPoints.value + pointsToAdd * energyMultiplier.value,
+    maxEnergyPoints
+  );
 };
 
 // Deduct energy points (no negative values)
@@ -339,6 +351,8 @@ const restartGame = () => {
   energyPoints.value=0;
   showHintModal = ref(false); // Controls the visibility of the hint modal
   hintModal = ref({ color: "", position: 0 }); // Stores the hint information
+  energyMultiplier = ref(1); // Default multiplier (normal speed)
+  energyBoostActive = ref(false); // Tracks if the boost is active
   generateSecretCombination();
 };
 
@@ -432,6 +446,32 @@ const applyPower = (powerName) => {
     } else {
       console.warn("No remaining hints to reveal.");
     }
+  }
+  break;
+  case "triple-energy": // Triple energy point gain for a limited time
+  if (energyPoints.value >= 2) {
+    console.log("Activating triple-energy power...");
+    console.log(`Current energy points before deduction: ${energyPoints.value}`);
+
+    energyMultiplier.value = 3; // Set the multiplier to 3x
+    energyBoostActive.value = true; // Activate the boost
+    deductEnergyPoints(2); // Deduct 2 energy points
+
+    console.log("Triple-energy power activated!");
+    console.log(`Energy multiplier set to: ${energyMultiplier.value}`);
+    console.log(`Energy points after deduction: ${energyPoints.value}`);
+    
+    // Set a timer to reset the multiplier after 15 seconds
+    setTimeout(() => {
+      energyMultiplier.value = 1; // Reset the multiplier to normal
+      energyBoostActive.value = false; // Deactivate the boost
+
+      console.log("Triple-energy boost expired.");
+      console.log(`Energy multiplier reset to: ${energyMultiplier.value}`);
+      console.log(`Energy boost active: ${energyBoostActive.value}`);
+    }, 15000); // Duration of 15 seconds
+  } else {
+    console.log("Not enough energy points to activate triple-energy power.");
   }
   break;
 

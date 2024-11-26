@@ -31,7 +31,7 @@ export const Characters: CharacterType[] = [
         image: "/images/powers/power-detective.svg"
       },
       {
-        name: "time-plus-five",
+        name: "triple-energy",
         description: "Reveals one exact color and position in the secret combination, slicing through the mystery.",
         image: "/images/powers/power-time.svg"
       }
