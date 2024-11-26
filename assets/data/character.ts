@@ -126,14 +126,14 @@ export const Characters: CharacterType[] = [
     description: "Flash is a superhero known for his incredible speed, which allows him to move and think at lightning-fast speeds.",
     powers: [
       {
-        name: "Super Speed",
+        name: "time-plus-five",
         description: "Instantly skip to the next row while revealing the number of correctly placed colors.",
-        image: "/images/powers/power-time.svg"
+        image: "/images/powers/five-plus.svg"
       },
       {
-        name: "Speed Force Manipulation",
+        name: "time-plus",
         description: "Undo your last move and reattempt the same row without penalty.",
-        image: "/images/powers/power-atomic.svg"
+        image: "/images/powers/time-plus.svg"
       }
     ]
   }

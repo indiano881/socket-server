@@ -368,16 +368,56 @@ const startGameCountdown = () => {
   }, 1000);
 };
 
-// Apply a power based on the provided image
+// Apply a power based on the provided image's name
 const applyPower = (powerImage) => {
-  if (powerImage === selectedCharacter.value.powerImg1 && energyPoints.value >= 3) {
-    gameCountdown.value = Math.min(gameCountdown.value + 5, 230);
-    deductEnergyPoints(3); // Deduct 3 energy points
-  } else if (powerImage === selectedCharacter.value.powerImg2 && energyPoints.value >= 5) {
-    gameCountdown.value = Math.min(gameCountdown.value + 15, 230);
+  if (!powerImage || !powerImage.name) {
+    console.warn("Invalid power image or name.");
+    return;
+  }
+
+  switch (powerImage.name) {
+    case "time-plus-five": // Add small time extension
+      if (energyPoints.value >= 5) {
+        gameCountdown.value = Math.min(gameCountdown.value + 5, 100);
+        deductEnergyPoints(5); // Deduct 3 energy points
+      }
+      break;
+
+      case "time-plus": // Add random time extension (3 to 10 seconds)
+  if (energyPoints.value >= 5) {
+    const randomTime = Math.floor(Math.random() * (10 - 3 + 1)) + 3; // Random number between 3 and 10
+    gameCountdown.value = Math.min(gameCountdown.value + randomTime, 230);
     deductEnergyPoints(5); // Deduct 5 energy points
   }
+  break;
+
+    case "revealColor": // Reveal a single color from the secret combination
+      if (energyPoints.value >= 4) {
+        const unrevealedIndex = colorGrid.value.findIndex(
+          (color, idx) =>
+            color === "white" && idx < secretCombination.value.length
+        );
+        if (unrevealedIndex !== -1) {
+          colorGrid.value[unrevealedIndex] =
+            secretCombination.value[unrevealedIndex];
+        }
+        deductEnergyPoints(4);
+      }
+      break;
+
+    case "resetEnergy": // Restore energy points
+      if (energyPoints.value >= 2) {
+        energyPoints.value = maxEnergyPoints;
+        deductEnergyPoints(2);
+      }
+      break;
+
+    default:
+      console.warn(`No effect defined for power: ${powerImage.name}`);
+      break;
+  }
 };
+
 </script>
 <style>
 .grayscale {
