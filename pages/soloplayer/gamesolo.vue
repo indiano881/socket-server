@@ -96,18 +96,18 @@
     </button>
   </div>
 </div>
-
+<div 
+  v-if="energyPowerFired" 
+  class="fixed top-4 right-4 bg-yellow-300 text-black p-4 rounded-lg shadow-lg"
+>
+  <p class="font-bold">Energy Boost Active!</p>
+  
+</div>
     <!-- Countdown Before Game Starts -->
     <div v-if="isCountdownRunning" class="flex justify-center items-center h-96">
       <h1 class="text-9xl font-bold text-yellow-400">{{ countdown }}</h1>
     </div>
-    <div 
-  v-if="energyBoostActive" 
-  class="fixed top-4 right-4 bg-yellow-300 text-black p-4 rounded-lg shadow-lg"
->
-  <p class="font-bold">Energy Boost Active!</p>
-  <p>Triple energy gain for 15 seconds.</p>
-</div>
+    
     <!-- Gameboard -->
     <div 
       v-if="isGameStarted" 
@@ -199,19 +199,21 @@
   </button>
   
   <!-- Power 2 Button -->
-  <button 
-    v-if="selectedCharacter.powerImg2" 
-    :disabled="energyPoints < 3" 
-    :class="{ 'grayscale': energyPoints < 3 }"
-    class="flex items-center justify-center w-20 h-20 bg-white border-2 border-black rounded-full  hover:bg-gray-300 transition"
-    @click="applyPower(selectedCharacter.powerName2)"
-  >
-    <img 
-      :src="selectedCharacter.powerImg2" 
-      alt="Power 2"
-      class="w-20 h-20"
-    />
-  </button>
+  <button
+  v-if="selectedCharacter?.powerImg2" 
+  :disabled="energyPoints < 3" 
+  :class="{ 
+    'grayscale cursor-not-allowed': energyPoints < 3
+  }"
+  class="flex items-center justify-center w-20 h-20 bg-white border-2 border-black rounded-full hover:bg-gray-300 transition"
+  @click="handlePower2Click"
+>
+  <img 
+    :src="selectedCharacter.powerImg2" 
+    alt="Power 2"
+    class="w-20 h-20"
+  />
+</button>
 </div>
  <!-- Buttons for Selecting Colors -->
   <div class="grid grid-cols-3 gap-2 mt-2">
@@ -247,8 +249,9 @@ const energyPoints = ref(3);
 let timerInterval; // Timer interval reference
 const showHintModal = ref(false); // Controls the visibility of the hint modal
 const hintModal = ref({ color: "", position: 0 }); // Stores the hint information
-const energyMultiplier = ref(1); // Default multiplier (normal speed)
-const energyBoostActive = ref(false); // Tracks if the boost is active
+
+
+const energyPowerFired=ref(false); //triple enrgy attack
 
 
 // Available colors (8 colors)
@@ -270,7 +273,7 @@ const generateSecretCombination = () => {
   console.log("Secret Combination:", secretCombination.value);
 };
 const addEnergyPoints = (pointsToAdd) => {
-  energyPoints.value = energyPoints.value + pointsToAdd * energyMultiplier.value
+  energyPoints.value = energyPoints.value + pointsToAdd 
     
 };
 
@@ -349,8 +352,7 @@ const restartGame = () => {
   energyPoints.value=3;
   showHintModal = ref(false); // Controls the visibility of the hint modal
   hintModal = ref({ color: "", position: 0 }); // Stores the hint information
-  energyMultiplier = ref(1); // Default multiplier (normal speed)
-  energyBoostActive = ref(false); // Tracks if the boost is active
+  // Default multiplier (normal speed)
   generateSecretCombination();
 };
 
@@ -444,18 +446,6 @@ const applyPower = (powerName) => {
    
   }
   break; 
-  case "triple energy": // Triple energy point gain for a limited time
-  if (energyPoints.value >= 3) {
-    
-    energyMultiplier.value = 3; 
-    energyBoostActive.value = true; 
-    deductEnergyPoints(3); 
-    
-    
-  } else {
-    console.log("Not enough energy points to activate triple-energy power.");
-  }
-  break;
 
     default:
       console.warn(`No effect defined for power: ${powerImage.name}`);
