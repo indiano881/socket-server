@@ -96,18 +96,18 @@
     </button>
   </div>
 </div>
-<div 
+
+    <!-- Countdown Before Game Starts -->
+    <div v-if="isCountdownRunning" class="flex justify-center items-center h-96">
+      <h1 class="text-9xl font-bold text-yellow-400">{{ countdown }}</h1>
+    </div>
+    <div 
   v-if="energyBoostActive" 
   class="fixed top-4 right-4 bg-yellow-300 text-black p-4 rounded-lg shadow-lg"
 >
   <p class="font-bold">Energy Boost Active!</p>
   <p>Triple energy gain for 15 seconds.</p>
 </div>
-    <!-- Countdown Before Game Starts -->
-    <div v-if="isCountdownRunning" class="flex justify-center items-center h-96">
-      <h1 class="text-9xl font-bold text-yellow-400">{{ countdown }}</h1>
-    </div>
-
     <!-- Gameboard -->
     <div 
       v-if="isGameStarted" 
@@ -116,7 +116,7 @@
       <div class="flex items-center justify-between px-4 py-2 ">
          <!-- Energy Points Display -->
          <div class="flex flex-col items-center bg-white border-2 border-black rounded-xl">
-    <p class="text-xl font-bold text-blck">Energy</p>
+    <p class="text-xl font-bold text-black">Energy</p>
     <p class="text-2xl font-bold" 
        :class="{
          'text-green-600': energyPoints > 0,
@@ -242,7 +242,7 @@ const showLoseModal = ref(false); // Controls the lose modal visibility
 const countdown = ref(3); // Pre-game countdown
 const gameCountdown = ref(100); // In-game countdown
 const progress = ref(100); // Progress bar width
-const maxEnergyPoints = 10;
+const maxEnergyPoints = 20;
 const energyPoints = ref(3);
 let timerInterval; // Timer interval reference
 const showHintModal = ref(false); // Controls the visibility of the hint modal
@@ -270,10 +270,8 @@ const generateSecretCombination = () => {
   console.log("Secret Combination:", secretCombination.value);
 };
 const addEnergyPoints = (pointsToAdd) => {
-  energyPoints.value = Math.min(
-    energyPoints.value + pointsToAdd * energyMultiplier.value,
-    maxEnergyPoints
-  );
+  energyPoints.value = energyPoints.value + pointsToAdd * energyMultiplier.value
+    
 };
 
 // Deduct energy points (no negative values)
@@ -414,14 +412,14 @@ const applyPower = (powerName) => {
   }
 
   switch (powerName) {
-    case "time-plus-five": // Add small time extension
+    case "Time control": // Add small time extension
       if (energyPoints.value >= 3) {
         gameCountdown.value = Math.min(gameCountdown.value + 5, 100);
         deductEnergyPoints(3); // Deduct 3 energy points
       }
       break;
 
-      case "time-plus-random": // Add random time extension (3 to 10 seconds)
+      case "Adrenaline Time Boost": // Add random time extension (3 to 10 seconds)
   if (energyPoints.value >=3) {
     const randomTime = Math.floor(Math.random() * (10 - 3 + 1)) + 3; // Random number between 3 and 10
     gameCountdown.value = Math.min(gameCountdown.value + randomTime, 100);
@@ -429,7 +427,7 @@ const applyPower = (powerName) => {
   }
   break;
 
-  case "reveal-hint": // Reveal a random color and position from the secret combination
+  case "Detective mode": // Reveal a random color and position from the secret combination
   if (energyPoints.value >= 3) {
     const unrevealedIndices = secretCombination.value.map((color, index) => {
       return { color, index };
@@ -445,33 +443,19 @@ const applyPower = (powerName) => {
       deductEnergyPoints(3); // Deduct 4 energy points
    
   }
-  break;/* NOT WORKING PROPERLY
-  case "triple-energy": // Triple energy point gain for a limited time
-  if (energyPoints.value >= 2) {
-    console.log("Activating triple-energy power...");
-    console.log(`Current energy points before deduction: ${energyPoints.value}`);
-
-    energyMultiplier.value = 3; // Set the multiplier to 3x
-    energyBoostActive.value = true; // Activate the boost
-    deductEnergyPoints(2); // Deduct 2 energy points
-
-    console.log("Triple-energy power activated!");
-    console.log(`Energy multiplier set to: ${energyMultiplier.value}`);
-    console.log(`Energy points after deduction: ${energyPoints.value}`);
+  break; 
+  case "triple energy": // Triple energy point gain for a limited time
+  if (energyPoints.value >= 3) {
     
-    // Set a timer to reset the multiplier after 15 seconds
-    setTimeout(() => {
-      energyMultiplier.value = 1; // Reset the multiplier to normal
-      energyBoostActive.value = false; // Deactivate the boost
-
-      console.log("Triple-energy boost expired.");
-      console.log(`Energy multiplier reset to: ${energyMultiplier.value}`);
-      console.log(`Energy boost active: ${energyBoostActive.value}`);
-    }, 15000); // Duration of 15 seconds
+    energyMultiplier.value = 3; 
+    energyBoostActive.value = true; 
+    deductEnergyPoints(3); 
+    
+    
   } else {
     console.log("Not enough energy points to activate triple-energy power.");
   }
-  break;*/
+  break;
 
     default:
       console.warn(`No effect defined for power: ${powerImage.name}`);

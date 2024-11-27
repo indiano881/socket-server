@@ -26,14 +26,14 @@ export const Characters: CharacterType[] = [
     description: "Wolverine is a powerful mutant known for his regenerative healing ability and adamantium claws.",
     powers: [
       {
-        name: "reveal-hint",
-        description: "Instantly restore up to 3 guesses if you lose a turn, ensuring your survival in the game longer.",
+        name: "Detective mode",
+        description: "Reveals one exact color and position in the secret combination, slicing through the mystery.",
         image: "/images/powers/power-detective.svg"
       },
       {
-        name: "time-plus-random",
-        description: "Reveals one exact color and position in the secret combination, slicing through the mystery.",
-        image: "/images/powers/power-time.svg"
+        name: "Adrenaline Time Boost",
+        description: "Generate a random boost of seconds between 3 and 10",
+        image: "/images/powers/time-plus.svg"
       }
     ]
   },
@@ -66,14 +66,14 @@ export const Characters: CharacterType[] = [
     description: "Heisenberg, also known as Walter White, is a chemistry teacher turned drug kingpin from the series Breaking Bad.",
     powers: [
       {
-        name: "Chemistry Expertise",
-        description: "Reveal all colors in the correct combination but not their positions, giving you a powerful clue.",
+        name: "Detective mode",
+        description: "Reveals one exact color and position in the secret combination, slicing through the mystery.",
         image: "/images/powers/power-detective.svg"
       },
       {
-        name: "Master Strategist",
+        name: "triple energy",
         description: "Switch the positions of two pegs in your guess to instantly validate if they're correct.",
-        image: "/images/powers/power-gun.svg"
+        image: "/images/powers/energy.svg"
       }
     ]
   },
@@ -91,10 +91,10 @@ export const Characters: CharacterType[] = [
         image: "/images/powers/power-detective.svg"
       },
       {
-        name: "Psychological Manipulation",
-        description: "Force an automatic hint reveal by deducting one turn from your total attempts.",
-        image: "/images/powers/power-atomic.svg"
-      }
+        name: "Detective mode",
+        description: "Reveals one exact color and position in the secret combination, slicing through the mystery.",
+        image: "/images/powers/power-detective.svg"
+      },
     ]
   },
   {
@@ -106,9 +106,9 @@ export const Characters: CharacterType[] = [
     description: "Freddy Krueger is the terrifying antagonist from the Nightmare on Elm Street series, known for haunting his victims' dreams.",
     powers: [
       {
-        name: "Dream Manipulation",
-        description: "Scramble the current guess to randomly rearrange colors, possibly solving part of the puzzle.",
-        image: "/images/powers/power-hearth.svg"
+        name: "Time control",
+        description: "Heris able to add 5 seconds extra to the countdown",
+        image: "/images/powers/five-plus.svg"
       },
       {
         name: "Immortality in Dreams",
@@ -126,13 +126,13 @@ export const Characters: CharacterType[] = [
     description: "Flash is a superhero known for his incredible speed, which allows him to move and think at lightning-fast speeds.",
     powers: [
       {
-        name: "time-plus-five",
-        description: "Instantly skip to the next row while revealing the number of correctly placed colors.",
+        name: "Time control",
+        description: "Heris able to add 5 seconds extra to the countdown",
         image: "/images/powers/five-plus.svg"
       },
       {
-        name: "time-plus-random",
-        description: "Undo your last move and reattempt the same row without penalty.",
+        name: "Adrenaline Time Boost",
+        description: "Generate a random boost of seconds between 3 and 10",
         image: "/images/powers/time-plus.svg"
       }
     ]
