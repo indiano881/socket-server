@@ -46,15 +46,15 @@ export const Characters: CharacterType[] = [
     description: "Super Mario is the iconic plumber known for saving Princess Peach and battling Bowser.",
     powers: [
       {
-        name: "Super Jump",
-        description: "Skip over the current row, letting you start fresh on the next attempt with 2 extra hints.",
-        image: "/images/powers/power-time.svg"
+        name: "Adrenaline Time Boost",
+        description: "Generate a random boost of seconds between 3 and 10",
+        image: "/images/powers/time-plus.svg"
       },
       {
-        name: "Fireball",
-        description: "Burn away two incorrect colors from the pool, narrowing down your options.",
-        image: "/images/powers/power-atomic.svg"
-      }
+        name: "Detective mode",
+        description: "Reveals one exact color and position in the secret combination, slicing through the mystery.",
+        image: "/images/powers/power-detective.svg"
+      },
     ]
   },
   {
@@ -71,9 +71,9 @@ export const Characters: CharacterType[] = [
         image: "/images/powers/power-detective.svg"
       },
       {
-        name: "triple energy",
-        description: "Switch the positions of two pegs in your guess to instantly validate if they're correct.",
-        image: "/images/powers/energy.svg"
+        name: "Adrenaline Time Boost",
+        description: "Generate a random boost of seconds between 3 and 10",
+        image: "/images/powers/time-plus.svg"
       }
     ]
   },
@@ -86,9 +86,9 @@ export const Characters: CharacterType[] = [
     description: "Jigsaw, or John Kramer, is the mastermind behind the twisted games in the Saw series, testing people's will to survive.",
     powers: [
       {
-        name: "Trap Creation",
-        description: "Set a trap to lock one correct color in its position, ensuring it cannot be removed in future guesses.",
-        image: "/images/powers/power-detective.svg"
+        name: "Time control",
+        description: "Heris able to add 5 seconds extra to the countdown",
+        image: "/images/powers/five-plus.svg"
       },
       {
         name: "Detective mode",
@@ -111,9 +111,9 @@ export const Characters: CharacterType[] = [
         image: "/images/powers/five-plus.svg"
       },
       {
-        name: "Immortality in Dreams",
-        description: "Resurrect one lost turn, giving you another chance to crack the code.",
-        image: "/images/powers/power-time.svg"
+        name: "Adrenaline Time Boost",
+        description: "Generate a random boost of seconds between 3 and 10",
+        image: "/images/powers/time-plus.svg"
       }
     ]
   },
