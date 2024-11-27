@@ -206,7 +206,7 @@
     'grayscale cursor-not-allowed': energyPoints < 3
   }"
   class="flex items-center justify-center w-20 h-20 bg-white border-2 border-black rounded-full hover:bg-gray-300 transition"
-  @click="handlePower2Click"
+  @click="applyPower(selectedCharacter.powerName2)"
 >
   <img 
     :src="selectedCharacter.powerImg2" 
@@ -431,21 +431,30 @@ const applyPower = (powerName) => {
 
   case "Detective mode": // Reveal a random color and position from the secret combination
   if (energyPoints.value >= 3) {
-    const unrevealedIndices = secretCombination.value.map((color, index) => {
-      return { color, index };
-    }).filter(({ index }) => !colorGrid.value.includes(secretCombination.value[index]));
+    if (secretCombination.value.length > 0) { // Ensure secret combination is not empty
+      const randomIndex = Math.floor(Math.random() * secretCombination.value.length); // Select a valid random index
+      console.log("randomIndex", randomIndex)
+      const randomHint = secretCombination.value[randomIndex];
+      console.log("RandomHint"+ randomHint)
+      if (randomHint) { // Ensure the randomHint is valid
+        hintModal.value = {
+          color: randomHint,
+          position: randomIndex + 1 // Convert to 1-based index for user readability
+        };
 
-    
-      const randomHint = unrevealedIndices[Math.floor(Math.random() * unrevealedIndices.length)];
-      hintModal.value = {
-        color: randomHint.color,
-        position: randomHint.index + 1 // Convert to 1-based index for user readability
-      };
-      showHintModal.value = true; // Show the modal
-      deductEnergyPoints(3); // Deduct 4 energy points
-   
+        console.log("Hint Color:", randomHint, "Hint Position:", randomIndex + 1);
+        showHintModal.value = true; // Show the modal
+        deductEnergyPoints(3); // Deduct 3 energy points
+      } else {
+        console.error("Random hint is undefined.");
+      }
+    } else {
+      console.error("Secret combination is empty. No hint available.");
+    }
+  } else {
+    console.log("Not enough energy points to use Detective mode.");
   }
-  break; 
+  break;
 
     default:
       console.warn(`No effect defined for power: ${powerImage.name}`);
