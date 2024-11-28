@@ -7,9 +7,9 @@ const httpServer = createServer();
 // Initialize Socket.io
 const io = new Server(httpServer, {
     cors: {
-        origin: 'http://localhost:3000', // Your Nuxt app URL// check if redeploys
-        methods: ['GET', 'POST']
-    }
+        origin: 'http://localhost:3000', // Your Nuxt app URL
+        methods: ['GET', 'POST'],
+    },
 });
 
 const matches = {}; // Store match data in-memory
@@ -22,7 +22,7 @@ function generateSecretCode(length = 4) {
         const randomIndex = Math.floor(Math.random() * availableColors.length);
         secretCode.push(availableColors[randomIndex]);
     }
-    console.log(secretCode)
+    console.log(secretCode);
     return secretCode;
 }
 
@@ -36,8 +36,8 @@ io.on('connection', (socket) => {
             matches[matchId] = {
                 players: [],
                 code: generateSecretCode(), // Generate a random secret code
+                readyPlayers: 0, // Track how many players are ready
             };
-            
         }
 
         const match = matches[matchId];
@@ -47,12 +47,33 @@ io.on('connection', (socket) => {
             socket.join(matchId);
             console.log(`Player joined match ${matchId}:`, match.players);
 
-            // If two players have joined, start the game
+            // Notify all players of the current match status
+            io.to(matchId).emit('playerJoined', { players: match.players.length });
+
+            // If two players have joined, wait for readiness
             if (match.players.length === 2) {
-                io.to(matchId).emit('startGame', match.code); // Send the secret code to both players
+                io.to(matchId).emit('waitingForReady'); // Notify players to get ready
             }
         } else {
             socket.emit('matchFull', matchId); // Notify player that match is full
+        }
+    });
+
+    // Handle player ready
+    socket.on('playerReady', ({ matchId, characterId }) => {
+        const match = matches[matchId];
+
+        if (match && match.players.includes(socket.id)) {
+            match.readyPlayers += 1;
+            console.log(`Player ${socket.id} is ready in match ${matchId} with character ${characterId}`);
+
+            // Notify other players that this player is ready
+            socket.to(matchId).emit('opponentReady', { characterId });
+
+            // If both players are ready, start the game
+            if (match.readyPlayers === 2) {
+                io.to(matchId).emit('bothPlayersReady', match.code); // Start the game and send the secret code
+            }
         }
     });
 
@@ -73,6 +94,9 @@ io.on('connection', (socket) => {
                 if (match.players.length === 0) {
                     delete matches[matchId];
                     console.log(`Match ${matchId} deleted`);
+                } else {
+                    // Notify remaining player that opponent left
+                    io.to(matchId).emit('opponentLeft');
                 }
                 break;
             }
