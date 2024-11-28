@@ -1,5 +1,4 @@
 <template>
-  
   <div class="p-4 max-w-5xl mx-auto bg-white rounded-xl shadow-md space-y-6 my-4 border-4 border-greynav">
     <h1 class="text-4xl font-bold">Match ID: {{ matchId }}</h1>
     <p v-if="loading" class="text-lg">The game is loading...</p>
@@ -12,9 +11,7 @@
         @click="markReady"
         :disabled="!selectedCharacter"
         class="mt-6 px-6 py-2 rounded text-white"
-        :class="[
-          ready ? 'bg-green-400 cursor-not-allowed' : 'bg-green-500 hover:bg-green-600'
-        ]"
+        :class="[ready ? 'bg-green-400 cursor-not-allowed' : 'bg-green-500 hover:bg-green-600']"
       >
         {{ ready ? "Ready (Waiting for Opponent)" : "Ready" }}
       </button>
@@ -43,7 +40,7 @@
           </p>
         </div>
 
-        <!-- Timer Countdown in the Center -->
+        <!-- Timer Countdown -->
         <h1
           class="text-5xl font-bold text-center flex-1"
           :class="{
@@ -55,7 +52,7 @@
           {{ gameCountdown }}
         </h1>
 
-        <!-- Character Image on the Right -->
+        <!-- Character Image -->
         <img
           :src="selectedCharacter?.icon"
           :alt="selectedCharacter?.label"
@@ -72,9 +69,7 @@
             :key="'color-grid-' + index"
             class="w-10 h-10 rounded-full"
             :style="{ backgroundColor: color }"
-          >
-            <!-- Dynamically updated colors -->
-          </div>
+          ></div>
         </div>
 
         <!-- Pegs Grid -->
@@ -84,9 +79,7 @@
             :key="'peg-' + index"
             class="w-6 h-6 rounded-full border border-black"
             :style="{ backgroundColor: peg }"
-          >
-            <!-- Pegs grid -->
-          </div>
+          ></div>
         </div>
       </div>
 
@@ -94,7 +87,6 @@
       <div class="flex justify-evenly mt-4">
         <!-- Character Power Buttons -->
         <div v-if="selectedCharacter" class="flex flex-col items-center justify-around">
-          <!-- Power 1 Button -->
           <button
             v-if="selectedCharacter.powerImg1"
             :disabled="energyPoints < 3"
@@ -102,14 +94,8 @@
             class="flex items-center justify-center w-20 h-20 bg-white border-2 border-black rounded-full hover:bg-gray-300 transition"
             @click="applyPower(selectedCharacter.powerName1)"
           >
-            <img
-              :src="selectedCharacter.powerImg1"
-              alt="Power 1"
-              class="w-16 h-16"
-            />
+            <img :src="selectedCharacter.powerImg1" alt="Power 1" class="w-16 h-16" />
           </button>
-
-          <!-- Power 2 Button -->
           <button
             v-if="selectedCharacter.powerImg2"
             :disabled="energyPoints < 3"
@@ -117,11 +103,7 @@
             class="flex items-center justify-center w-20 h-20 bg-white border-2 border-black rounded-full hover:bg-gray-300 transition"
             @click="applyPower(selectedCharacter.powerName2)"
           >
-            <img
-              :src="selectedCharacter.powerImg2"
-              alt="Power 2"
-              class="w-16 h-16"
-            />
+            <img :src="selectedCharacter.powerImg2" alt="Power 2" class="w-16 h-16" />
           </button>
         </div>
 
@@ -133,9 +115,7 @@
             class="w-12 h-12 rounded-full shadow-md focus:outline-none hover:ring-2 hover:ring-gray-500 transition border-2 border-black"
             :style="{ backgroundColor: color }"
             @click="addColorToGrid(color)"
-          >
-            <!-- Color buttons -->
-          </button>
+          ></button>
         </div>
       </div>
     </div>
@@ -145,34 +125,98 @@
   </div>
 </template>
 
-
 <script setup>
 import { ref, reactive, onMounted, onUnmounted } from "vue";
 import { useRoute } from "vue-router";
 import { io } from "socket.io-client";
 
+// Constants for grid size
+const ROW_SIZE = 4;
+const TOTAL_ROWS = 7;
+
 // Reactive variables
 const matchId = ref("");
 const loading = ref(true);
-const countdown = ref(0); // Countdown timer
+const countdown = ref(0);
 const gameStarted = ref(false);
 const errorMessage = ref("");
-const secretCode = ref(""); // The secret code for both players
-const selectedCharacter = ref(null); // The selected character
-const ready = ref(false); // Track readiness status
+const secretCode = ref([]); // Updated to an array for the secret combination
+const selectedCharacter = ref(null);
+const ready = ref(false);
 
-// Gameboard structure
-const rows = Array.from({ length: 6 }, (_, i) => i + 1); // Number of rows
-const cols = Array.from({ length: 4 }, (_, i) => i + 1); // Number of columns
+// Energy points
+const maxEnergyPoints = 20;
+const energyPoints = ref(3);
 
-const socket = io("http://localhost:4000"); // Connect to your Socket.io server
+// Gameboard
+const colorGrid = ref(Array(ROW_SIZE * TOTAL_ROWS).fill("white"));
+const pegsGrid = ref(Array(ROW_SIZE * TOTAL_ROWS).fill("white"));
+const currentRow = ref(0);
+
+const socket = io("http://localhost:4000");
 
 // Handle character selection
 const handleCharacterSelection = (character) => {
   selectedCharacter.value = character;
 };
 
-// Mark the player as ready
+// Deduct energy points
+const deductEnergyPoints = (pointsToDeduct) => {
+  energyPoints.value = Math.max(energyPoints.value - pointsToDeduct, 0);
+};
+
+// Add energy points
+const addEnergyPoints = (pointsToAdd) => {
+  energyPoints.value = Math.min(energyPoints.value + pointsToAdd, maxEnergyPoints);
+};
+
+// Check row match
+const checkRowMatch = () => {
+  const start = currentRow.value * ROW_SIZE;
+  const end = start + ROW_SIZE;
+  const rowColors = colorGrid.value.slice(start, end);
+  const feedbackPegs = Array(ROW_SIZE).fill(null);
+
+  const secret = [...secretCode.value];
+  const player = [...rowColors];
+
+  // Correct colors and positions
+  player.forEach((color, index) => {
+    if (color === secret[index]) {
+      feedbackPegs[index] = "green";
+      secret[index] = null;
+      player[index] = null;
+      addEnergyPoints(1);
+    }
+  });
+
+  // Correct colors but wrong positions
+  player.forEach((color, index) => {
+    if (color && secret.includes(color)) {
+      feedbackPegs[index] = "grey";
+      secret[secret.indexOf(color)] = null;
+    }
+  });
+
+  // Update pegs grid
+  feedbackPegs.forEach((peg, i) => {
+    pegsGrid.value[start + i] = peg || "white";
+  });
+
+  // Win condition
+  if (feedbackPegs.every((peg) => peg === "green")) {
+    alert("You win!");
+    return;
+  }
+
+  // Move to next row or lose
+  currentRow.value++;
+  if (currentRow.value >= TOTAL_ROWS) {
+    alert("You lose!");
+  }
+};
+
+// Mark as ready
 const markReady = () => {
   if (selectedCharacter.value) {
     ready.value = true;
@@ -180,66 +224,46 @@ const markReady = () => {
   }
 };
 
-// Extract id and set up Socket.io logic
+// Socket logic
 onMounted(() => {
   const route = useRoute();
-  matchId.value = route.params.id; // Extract id from the URL
+  matchId.value = route.params.id;
 
-  if (matchId.value) {
-    // Notify the server of joining the match
-    socket.emit("joinMatch", matchId.value);
+  socket.emit("joinMatch", matchId.value);
 
-    // Handle player joined event
-    socket.on("playerJoined", ({ players }) => {
-      console.log(`Players in match ${matchId.value}:`, players);
-    });
+  socket.on("playerJoined", ({ players }) => {
+    console.log(`Players in match:`, players);
+  });
 
-    // Handle when both players are ready and the game starts
-    socket.on("bothPlayersReady", (code) => {
-      loading.value = false;
-
-      // Set the secret code
-      secretCode.value = code;
-
-      // Start countdown
-      let timer = 3;
-      countdown.value = timer;
-      const interval = setInterval(() => {
-        timer -= 1;
-        countdown.value = timer;
-
-        if (timer <= 0) {
-          clearInterval(interval);
-          gameStarted.value = true;
-          countdown.value = 0;
-        }
-      }, 1000);
-    });
-
-    // Handle the case when the match is full
-    socket.on("matchFull", () => {
-      loading.value = false;
-      errorMessage.value = "This match is already full. Please try another match.";
-    });
-
-    // Handle errors
-    socket.on("invalidMatch", () => {
-      loading.value = false;
-      errorMessage.value = "Invalid match ID. Please check the link.";
-    });
-
-    // Handle opponent left
-    socket.on("opponentLeft", () => {
-      errorMessage.value = "Your opponent left the match. Please wait for another player or leave the match.";
-      ready.value = false;
-    });
-  } else {
+  socket.on("bothPlayersReady", (data) => {
+    secretCode.value = data.code;
     loading.value = false;
-    errorMessage.value = "No match ID provided. Please use a valid match link.";
-  }
+
+    let timer = 3;
+    countdown.value = timer;
+    const interval = setInterval(() => {
+      countdown.value = --timer;
+      if (timer <= 0) {
+        clearInterval(interval);
+        gameStarted.value = true;
+      }
+    }, 1000);
+  });
+
+  socket.on("matchFull", () => {
+    errorMessage.value = "This match is already full.";
+  });
+
+  socket.on("invalidMatch", () => {
+    errorMessage.value = "Invalid match ID.";
+  });
+
+  socket.on("opponentLeft", () => {
+    errorMessage.value = "Your opponent left the match.";
+    ready.value = false;
+  });
 });
 
-// Clean up socket connection on component unmount
 onUnmounted(() => {
   socket.disconnect();
 });
