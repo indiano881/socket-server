@@ -72,7 +72,19 @@ io.on('connection', (socket) => {
 
             // If both players are ready, start the game
             if (match.readyPlayers === 2) {
-                io.to(matchId).emit('bothPlayersReady', match.code); // Start the game and send the secret code
+                io.to(matchId).emit('bothPlayersReady', match.code); // Notify clients that both players are ready
+
+                // Start the countdown
+                let countdown = 10; // Countdown duration in seconds
+                const countdownInterval = setInterval(() => {
+                    if (countdown > 0) {
+                        io.to(matchId).emit('countdown', countdown); // Send countdown updates
+                        countdown--;
+                    } else {
+                        clearInterval(countdownInterval); // Stop the countdown
+                        io.to(matchId).emit('gameStart', { code: match.code }); // Notify clients that the game has started
+                    }
+                }, 1000);
             }
         }
     });

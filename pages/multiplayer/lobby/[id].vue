@@ -5,7 +5,7 @@
     <p v-else-if="errorMessage" class="text-red-500">{{ errorMessage }}</p>
 
     <!-- Character selection -->
-    <div v-if="!ready">
+    <div v-if="!ready && !gameStarted">
       <CharacterSelection @characterSelected="handleCharacterSelection" />
       <button
         @click="markReady"
@@ -29,7 +29,6 @@
         Find the secret code: <strong>{{ secretCode }}</strong>
       </p>
       <div class="board grid grid-rows-6 grid-cols-4 gap-2 mt-4">
-        <!-- Example board structure -->
         <div
           v-for="row in rows"
           :key="row"
@@ -40,7 +39,6 @@
             :key="cell"
             class="cell w-12 h-12 border border-black flex items-center justify-center text-lg"
           >
-            <!-- Each cell can later represent a part of the game -->
             ?
           </div>
         </div>
@@ -54,7 +52,6 @@
 import { ref, reactive, onMounted, onUnmounted } from "vue";
 import { useRoute } from "vue-router";
 import { io } from "socket.io-client";
-import CharacterSelection from "@/components/CharacterSelection.vue"; // Import the CharacterSelection component
 
 // Reactive variables
 const matchId = ref("");
@@ -67,8 +64,8 @@ const selectedCharacter = ref(null); // The selected character
 const ready = ref(false); // Track readiness status
 
 // Gameboard structure
-const rows = 6; // Number of rows
-const cols = 4; // Number of columns
+const rows = Array.from({ length: 6 }, (_, i) => i + 1); // Number of rows
+const cols = Array.from({ length: 4 }, (_, i) => i + 1); // Number of columns
 
 const socket = io("http://localhost:4000"); // Connect to your Socket.io server
 
@@ -94,8 +91,13 @@ onMounted(() => {
     // Notify the server of joining the match
     socket.emit("joinMatch", matchId.value);
 
-    // Handle the server response when the game starts
-    socket.on("startGame", (code) => {
+    // Handle player joined event
+    socket.on("playerJoined", ({ players }) => {
+      console.log(`Players in match ${matchId.value}:`, players);
+    });
+
+    // Handle when both players are ready and the game starts
+    socket.on("bothPlayersReady", (code) => {
       loading.value = false;
 
       // Set the secret code
@@ -108,7 +110,7 @@ onMounted(() => {
         timer -= 1;
         countdown.value = timer;
 
-        if (timer === 0) {
+        if (timer <= 0) {
           clearInterval(interval);
           gameStarted.value = true;
           countdown.value = 0;
@@ -119,14 +121,19 @@ onMounted(() => {
     // Handle the case when the match is full
     socket.on("matchFull", () => {
       loading.value = false;
-      errorMessage.value =
-        "This match is already full. Please try another match.";
+      errorMessage.value = "This match is already full. Please try another match.";
     });
 
     // Handle errors
     socket.on("invalidMatch", () => {
       loading.value = false;
       errorMessage.value = "Invalid match ID. Please check the link.";
+    });
+
+    // Handle opponent left
+    socket.on("opponentLeft", () => {
+      errorMessage.value = "Your opponent left the match. Please wait for another player or leave the match.";
+      ready.value = false;
     });
   } else {
     loading.value = false;
