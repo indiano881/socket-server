@@ -7,7 +7,7 @@ const httpServer = createServer();
 // Initialize Socket.io
 const io = new Server(httpServer, {
     cors: {
-        origin: 'http://localhost:3000', // Your Nuxt app URL
+        origin: 'http://localhost:3000', // Your Nuxt app URL// check if redeploys
         methods: ['GET', 'POST']
     }
 });
