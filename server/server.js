@@ -14,7 +14,7 @@ const io = new Server(httpServer, {
 const matches = {}; // Store match data in-memory
 
 io.on('connection', (socket) => {
-  console.log('A user connected:', socket.id);
+  console.log('A user connected:', socket.id);//WORKS
 
   // Handle joining a match
   socket.on('joinMatch', (matchId) => {
