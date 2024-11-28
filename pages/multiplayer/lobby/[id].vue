@@ -1,10 +1,11 @@
 <template>
-  <div class="game-session text-center p-5">
+  
+  <div class="p-4 max-w-5xl mx-auto bg-white rounded-xl shadow-md space-y-6 my-4 border-4 border-greynav">
     <h1 class="text-4xl font-bold">Match ID: {{ matchId }}</h1>
     <p v-if="loading" class="text-lg">The game is loading...</p>
     <p v-else-if="errorMessage" class="text-red-500">{{ errorMessage }}</p>
 
-    <!-- Character selection -->
+    <!-- Character Selection -->
     <div v-if="!ready && !gameStarted">
       <CharacterSelection @characterSelected="handleCharacterSelection" />
       <button
@@ -19,34 +20,131 @@
       </button>
     </div>
 
-    <!-- Countdown and game board -->
-    <p v-else-if="countdown > 0" class="text-2xl font-bold">
-      Game starts in: {{ countdown }}
-    </p>
-    <div v-else-if="gameStarted" class="game-board mt-5">
-      <h2 class="text-3xl font-bold mb-4">Gameboard</h2>
-      <p class="text-xl">
-        Find the secret code: <strong>{{ secretCode }}</strong>
-      </p>
-      <div class="board grid grid-rows-6 grid-cols-4 gap-2 mt-4">
-        <div
-          v-for="row in rows"
-          :key="row"
-          class="row flex justify-center"
-        >
-          <div
-            v-for="cell in cols"
-            :key="cell"
-            class="cell w-12 h-12 border border-black flex items-center justify-center text-lg"
+    <!-- Countdown Before Game Starts -->
+    <div v-if="countdown > 0" class="flex justify-center items-center h-96">
+      <h1 class="text-9xl font-bold text-yellow-400">{{ countdown }}</h1>
+    </div>
+
+    <!-- Gameboard -->
+    <div v-else-if="gameStarted" class="game-board mt-5 flex flex-col bg-purple-300 rounded-lg shadow-md border-2 border-black">
+      <!-- Game Header -->
+      <div class="flex items-center justify-between px-4 py-2">
+        <!-- Energy Points Display -->
+        <div class="flex flex-col items-center bg-white border-2 border-black rounded-xl p-2">
+          <p class="text-xl font-bold text-black">Energy</p>
+          <p
+            class="text-2xl font-bold"
+            :class="{
+              'text-green-600': energyPoints > 0,
+              'text-yellow-500': energyPoints === 0
+            }"
           >
-            ?
+            {{ energyPoints }}/{{ maxEnergyPoints }}
+          </p>
+        </div>
+
+        <!-- Timer Countdown in the Center -->
+        <h1
+          class="text-5xl font-bold text-center flex-1"
+          :class="{
+            'text-green-600': gameCountdown > 15,
+            'text-yellow-600': gameCountdown <= 15 && gameCountdown > 5,
+            'text-red-600': gameCountdown <= 5,
+          }"
+        >
+          {{ gameCountdown }}
+        </h1>
+
+        <!-- Character Image on the Right -->
+        <img
+          :src="selectedCharacter?.icon"
+          :alt="selectedCharacter?.label"
+          class="w-20 h-20 p-1 rounded-full border-2 border-gray-800 bg-white ml-4"
+        />
+      </div>
+
+      <!-- Gameboard Content -->
+      <div class="flex space-x-4 mt-4">
+        <!-- Color Choices Grid -->
+        <div class="grid grid-cols-4 gap-2 border-2 border-gray-300 rounded-lg p-2 bg-gray-100">
+          <div
+            v-for="(color, index) in colorGrid"
+            :key="'color-grid-' + index"
+            class="w-10 h-10 rounded-full"
+            :style="{ backgroundColor: color }"
+          >
+            <!-- Dynamically updated colors -->
+          </div>
+        </div>
+
+        <!-- Pegs Grid -->
+        <div class="grid grid-cols-4 gap-2 border-2 border-gray-300 rounded-lg p-2 bg-gray-100">
+          <div
+            v-for="(peg, index) in pegsGrid"
+            :key="'peg-' + index"
+            class="w-6 h-6 rounded-full border border-black"
+            :style="{ backgroundColor: peg }"
+          >
+            <!-- Pegs grid -->
           </div>
         </div>
       </div>
+
+      <!-- Buttons Container -->
+      <div class="flex justify-evenly mt-4">
+        <!-- Character Power Buttons -->
+        <div v-if="selectedCharacter" class="flex flex-col items-center justify-around">
+          <!-- Power 1 Button -->
+          <button
+            v-if="selectedCharacter.powerImg1"
+            :disabled="energyPoints < 3"
+            :class="{ 'grayscale cursor-not-allowed': energyPoints < 3 }"
+            class="flex items-center justify-center w-20 h-20 bg-white border-2 border-black rounded-full hover:bg-gray-300 transition"
+            @click="applyPower(selectedCharacter.powerName1)"
+          >
+            <img
+              :src="selectedCharacter.powerImg1"
+              alt="Power 1"
+              class="w-16 h-16"
+            />
+          </button>
+
+          <!-- Power 2 Button -->
+          <button
+            v-if="selectedCharacter.powerImg2"
+            :disabled="energyPoints < 3"
+            :class="{ 'grayscale cursor-not-allowed': energyPoints < 3 }"
+            class="flex items-center justify-center w-20 h-20 bg-white border-2 border-black rounded-full hover:bg-gray-300 transition"
+            @click="applyPower(selectedCharacter.powerName2)"
+          >
+            <img
+              :src="selectedCharacter.powerImg2"
+              alt="Power 2"
+              class="w-16 h-16"
+            />
+          </button>
+        </div>
+
+        <!-- Buttons for Selecting Colors -->
+        <div class="grid grid-cols-3 gap-2">
+          <button
+            v-for="(color, index) in availableColors"
+            :key="'button-' + index"
+            class="w-12 h-12 rounded-full shadow-md focus:outline-none hover:ring-2 hover:ring-gray-500 transition border-2 border-black"
+            :style="{ backgroundColor: color }"
+            @click="addColorToGrid(color)"
+          >
+            <!-- Color buttons -->
+          </button>
+        </div>
+      </div>
     </div>
+
+    <!-- Waiting for Another Player -->
     <p v-else class="text-lg">Waiting for another player to join...</p>
   </div>
 </template>
+
 
 <script setup>
 import { ref, reactive, onMounted, onUnmounted } from "vue";
