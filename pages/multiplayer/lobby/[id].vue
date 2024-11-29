@@ -126,7 +126,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, onUnmounted } from "vue";
+import { ref, reactive, onMounted, onUnmounted, watch } from "vue";
 import { useRoute } from "vue-router";
 import { io } from "socket.io-client";
 
@@ -139,10 +139,25 @@ const matchId = ref("");
 const loading = ref(true);
 const countdown = ref(0);
 const gameStarted = ref(false);
+const gameCountdown = ref(100); // In-game countdown
 const errorMessage = ref("");
-const secretCode = ref([]); // Updated to an array for the secret combination
+const secretCombination = ref(null); // Store the secret combination
 const selectedCharacter = ref(null);
 const ready = ref(false);
+// Timer interval reference
+let timerInterval = null;
+// Available colors (8 colors)
+const availableColors = [
+  "red",
+  "blue",
+  "green",
+  "yellow",
+  "purple",
+  "orange",
+  "pink",
+  "cyan",
+  "brown",
+];
 
 // Energy points
 const maxEnergyPoints = 20;
@@ -153,11 +168,28 @@ const colorGrid = ref(Array(ROW_SIZE * TOTAL_ROWS).fill("white"));
 const pegsGrid = ref(Array(ROW_SIZE * TOTAL_ROWS).fill("white"));
 const currentRow = ref(0);
 
-const socket = io("http://localhost:4000");
+// Initialize socket connection
+const socket = io("http://localhost:4000"); // Replace with your server's URL
 
 // Handle character selection
 const handleCharacterSelection = (character) => {
   selectedCharacter.value = character;
+};
+
+// Add selected color to the grid (left-to-right behavior)
+const addColorToGrid = (color) => {
+  const start = currentRow.value * 4;
+  const end = start + 4;
+
+  for (let i = start; i < end; i++) {
+    if (colorGrid.value[i] === "white") {
+      colorGrid.value[i] = color;
+      if (i === end - 1) {
+        checkRowMatch();
+      }
+      break;
+    }
+  }
 };
 
 // Deduct energy points
@@ -170,76 +202,114 @@ const addEnergyPoints = (pointsToAdd) => {
   energyPoints.value = Math.min(energyPoints.value + pointsToAdd, maxEnergyPoints);
 };
 
-// Check row match
-const checkRowMatch = () => {
-  const start = currentRow.value * ROW_SIZE;
-  const end = start + ROW_SIZE;
-  const rowColors = colorGrid.value.slice(start, end);
-  const feedbackPegs = Array(ROW_SIZE).fill(null);
+// Handle loss
+const handleLoss = () => {
+  clearInterval(timerInterval); // Stop the timer
+  showLoseModal.value = true; // Show the lose modal
+};
 
-  const secret = [...secretCode.value];
+// Check if the current row matches the secret combination
+const checkRowMatch = () => {
+  const start = currentRow.value * 4;
+  const end = start + 4;
+  const rowColors = colorGrid.value.slice(start, end);
+  const feedbackPegs = Array(4).fill(null); // Initialize feedback for the current row
+
+  // Create copies for matching
+  const secret = [...secretCombination.value];
   const player = [...rowColors];
 
-  // Correct colors and positions
+  // Check for correct colors in the correct position (green pegs)
   player.forEach((color, index) => {
     if (color === secret[index]) {
-      feedbackPegs[index] = "green";
-      secret[index] = null;
-      player[index] = null;
-      addEnergyPoints(1);
+      feedbackPegs[index] = "green"; // Correct color and position
+      secret[index] = null; // Remove from matching pool
+      player[index] = null; // Mark as matched
+      energyPoints.value += 1; // Increase points for each green peg
     }
   });
 
-  // Correct colors but wrong positions
-  player.forEach((color, index) => {
+  // Check for correct colors in the wrong position (grey pegs)
+  player.forEach((color, playerIndex) => {
     if (color && secret.includes(color)) {
-      feedbackPegs[index] = "grey";
-      secret[secret.indexOf(color)] = null;
+      const secretIndex = secret.indexOf(color);
+      feedbackPegs[playerIndex] = "grey"; // Correct color, wrong position
+      secret[secretIndex] = null; // Remove from matching pool
     }
   });
 
-  // Update pegs grid
-  feedbackPegs.forEach((peg, i) => {
-    pegsGrid.value[start + i] = peg || "white";
-  });
+  // Fill feedback pegs into the pegs grid
+  for (let i = 0; i < 4; i++) {
+    const pegIndex = start + i;
+    pegsGrid.value[pegIndex] = feedbackPegs[i] || "white"; // Default to white if no feedback
+  }
 
-  // Win condition
+  // Check if all pegs in this row are green (win condition)
   if (feedbackPegs.every((peg) => peg === "green")) {
-    alert("You win!");
+    clearInterval(timerInterval); // Stop the timer
+    showWinModal.value = true; // Show the win modal
     return;
   }
 
-  // Move to next row or lose
-  currentRow.value++;
-  if (currentRow.value >= TOTAL_ROWS) {
-    alert("You lose!");
+  // Move to the next row or trigger loss if out of attempts
+  currentRow.value += 1;
+  if (currentRow.value >= 7) {
+    handleLoss();
   }
+};
+
+// Start the in-game countdown and manage the progress bar
+const startGameCountdown = () => {
+  const totalGameTime = 100;
+  const timerInterval = setInterval(() => {
+    gameCountdown.value -= 1;
+    progress.value = (gameCountdown.value / totalGameTime) * 100;
+    if (gameCountdown.value <= 0) {
+      clearInterval(timerInterval);
+      handleLoss(); // Trigger loss if time runs out
+    }
+  }, 1000);
 };
 
 // Mark as ready
 const markReady = () => {
   if (selectedCharacter.value) {
     ready.value = true;
-    socket.emit("playerReady", { matchId: matchId.value, characterId: selectedCharacter.value.id });
+    socket.emit("playerReady", {
+      matchId: matchId.value,
+      characterId: selectedCharacter.value.id,
+    });
   }
 };
 
-// Socket logic
+// Watch for changes in secretCombination
+watch(secretCombination, (newValue) => {
+  console.log("secretCombination updated:", newValue);
+});
+
+// Lifecycle Hooks
 onMounted(() => {
   const route = useRoute();
   matchId.value = route.params.id;
 
   socket.emit("joinMatch", matchId.value);
 
+  socket.on("secretCombination", (data) => {
+    console.log("Received secret combination:", data.secretCombination);
+    secretCombination.value = data.secretCombination;
+  });
+
   socket.on("playerJoined", ({ players }) => {
     console.log(`Players in match:`, players);
   });
 
   socket.on("bothPlayersReady", (data) => {
-    secretCode.value = data.code;
-    loading.value = false;
-
-    let timer = 3;
+    console.log(data)
+    if (data) {
+      secretCombination.value = data;
+      loading.value = false;
+      console.log(secretCombination.value)
+      let timer = 3;
     countdown.value = timer;
     const interval = setInterval(() => {
       countdown.value = --timer;
@@ -248,6 +318,9 @@ onMounted(() => {
         gameStarted.value = true;
       }
     }, 1000);
+    }
+
+    
   });
 
   socket.on("matchFull", () => {
@@ -268,3 +341,4 @@ onUnmounted(() => {
   socket.disconnect();
 });
 </script>
+
