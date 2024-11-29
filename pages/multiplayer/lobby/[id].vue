@@ -21,7 +21,30 @@
     <div v-if="countdown > 0" class="flex justify-center items-center h-96">
       <h1 class="text-9xl font-bold text-yellow-400">{{ countdown }}</h1>
     </div>
-
+<!-- Win Modal -->
+<div 
+      v-if="showWinModal" 
+      class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
+    >
+      <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+        <h1 class="text-4xl font-bold text-green-600">You Win!</h1>
+        <div class="flex justify-center space-x-2 mt-4">
+          <div 
+            v-for="(color, index) in secretCombination" 
+            :key="'secret-' + index" 
+            class="w-10 h-10 rounded-full"
+            :style="{ backgroundColor: color }"
+          ></div>
+        </div>
+        <p class="text-xl mt-4 text-gray-900">Time left: <span class="font-bold">{{ gameCountdown }} seconds</span></p>
+        <button 
+          class="bg-green-500 text-white px-6 py-2 rounded-lg mt-4 hover:bg-green-600"
+          @click="restartGame"
+        >
+          Back to lobby
+        </button>
+      </div>
+    </div>
     <!-- Gameboard -->
     <div v-else-if="gameStarted" class="game-board mt-5 flex flex-col bg-purple-300 rounded-lg shadow-md border-2 border-black">
       <!-- Game Header -->
@@ -140,6 +163,7 @@ const loading = ref(true);
 const countdown = ref(0);
 const gameStarted = ref(false);
 const gameCountdown = ref(100); // In-game countdown
+const showWinModal = ref(false); // Controls the win modal visibility
 const errorMessage = ref("");
 const secretCombination = ref(null); // Store the secret combination
 const selectedCharacter = ref(null);
