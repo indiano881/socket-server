@@ -282,17 +282,17 @@ const checkRowMatch = () => {
   }
 };
 
-// Start the in-game countdown and manage the progress bar
 const startGameCountdown = () => {
   const totalGameTime = 100;
-  const timerInterval = setInterval(() => {
+  gameCountdown.value = totalGameTime;
+
+  timerInterval = setInterval(() => {
     gameCountdown.value -= 1;
-    progress.value = (gameCountdown.value / totalGameTime) * 100;
     if (gameCountdown.value <= 0) {
-      clearInterval(timerInterval);
-      handleLoss(); // Trigger loss if time runs out
+      clearInterval(timerInterval); // Stop the timer when it reaches 0
+      handleLoss(); // Handle game loss when the timer ends
     }
-  }, 1000);
+  }, 1000); // Decrease every second
 };
 
 // Mark as ready
@@ -328,24 +328,27 @@ onMounted(() => {
   });
 
   socket.on("bothPlayersReady", (data) => {
-    console.log(data)
-    if (data) {
-      secretCombination.value = data;
-      loading.value = false;
-      console.log(secretCombination.value)
-      let timer = 3;
+  console.log(data);
+  if (data) {
+    secretCombination.value = data;
+    loading.value = false;
+    console.log(secretCombination.value);
+
+    // Pre-game countdown
+    let timer = 3;
     countdown.value = timer;
     const interval = setInterval(() => {
       countdown.value = --timer;
       if (timer <= 0) {
         clearInterval(interval);
         gameStarted.value = true;
+
+        // Start the in-game countdown when the game starts
+        startGameCountdown();
       }
     }, 1000);
-    }
-
-    
-  });
+  }
+});
 
   socket.on("matchFull", () => {
     errorMessage.value = "This match is already full.";
