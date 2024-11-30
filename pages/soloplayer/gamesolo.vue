@@ -1,5 +1,5 @@
 <template>
-  <div class="p-4 max-w-5xl mx-auto bg-white rounded-xl shadow-md space-y-6 my-4 border-4 border-greynav">
+  <div class="p-2 max-w-5xl mx-auto bg-white rounded-xl shadow-md space-y-6 my-4 border-4 border-greynav">
    <!-- Win Modal -->
    <div 
       v-if="showWinModal" 
@@ -141,16 +141,16 @@
       </div>
 
       <!-- Gameboard Content -->
-      <div class="flex space-x-4">
+      <div class="flex space-x-4 ml-4 justify-around">
         <!-- Color Choices Grid -->
         <div class="flex">
           <div 
-            class="grid grid-cols-4 gap-2 border-2 border-gray-300 rounded-lg p-2 bg-gray-100"
+            class="grid grid-cols-4 gap-2 border-2 border-greynav rounded-xl p-2 "
           >
             <div 
               v-for="(color, index) in colorGrid" 
               :key="'color-grid-' + index" 
-              class="w-10 h-10 rounded-full"
+              class="w-10 h-10 rounded-full border-2 border-greynav"
               :style="{ backgroundColor: color }"
             >
               <!-- Dynamically updated colors -->
@@ -160,12 +160,12 @@
 
         <!-- Pegs Grid -->
         <div 
-          class="basis-1/4 grid grid-cols-4 gap-2 border-2 border-gray-300 rounded-lg p-2 bg-gray-100"
+          class="grid grid-cols-4 border-2 border-greynav rounded-lg p-1 place-items-center"
         >
           <div 
             v-for="(peg, index) in pegsGrid" 
             :key="'peg-' + index" 
-            class="w-6 h-6 rounded-full border border-black"
+            class="w-6 h-6 rounded-full border-2 border-greynav"
             :style="{ backgroundColor: peg }"
           >
             <!-- Pegs grid -->
@@ -176,7 +176,7 @@
  <!-- Buttons CONTAINER -->
       <div class="flex justify-evenly">
 <!-- Character Power Buttons -->
-<div v-if="selectedCharacter" class="flex flex-col items-center justify-around">
+<div v-if="selectedCharacter" class="flex flex-col w-[25%] items-center justify-around">
   <!-- Power 1 Button -->
   <button 
     v-if="selectedCharacter.powerImg1" 
@@ -210,11 +210,11 @@
 </button>
 </div>
  <!-- Buttons for Selecting Colors -->
-  <div class="grid grid-cols-3 gap-2 mt-2">
+  <div class="grid grid-cols-3 gap-2 mt-2 w-[65%]">
     <button 
     v-for="(color, index) in availableColors" 
     :key="'button-' + index" 
-    class="w-12 h-12 rounded-full shadow-md focus:outline-none hover:ring-2 hover:ring-gray-500 transition border-2 border-black"
+    class="w-12 h-12 rounded-full min-w-[75px] focus:outline-none hover:ring-2 hover:ring-greynav transition border-2 border-greynav"
     :style="{ backgroundColor: color }"
     @click="addColorToGrid(color)"
   >

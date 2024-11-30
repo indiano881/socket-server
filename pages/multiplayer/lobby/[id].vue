@@ -1,19 +1,19 @@
 <template>
-  <div class="p-4 max-w-5xl mx-auto bg-white rounded-xl shadow-md space-y-6 my-4 border-4 border-greynav">
+  <div class="p-2 max-w-5xl mx-auto bg-white rounded-xl shadow-md space-y-6 my-4 border-4 border-greynav">
     <h1 class="text-4xl font-bold">Match ID: {{ matchId }}</h1>
     <p v-if="loading" class="text-lg">The game is loading...</p>
     <p v-else-if="errorMessage" class="text-red-500">{{ errorMessage }}</p>
 
     <!-- Character Selection -->
-    <div v-if="!ready && !gameStarted">
+    <div v-if="!ready && !gameStarted" class="flex flex-col items-center">
       <CharacterSelection @characterSelected="handleCharacterSelection" />
       <button
         @click="markReady"
         :disabled="!selectedCharacter"
-        class="mt-6 px-6 py-2 rounded text-white"
+        class="bg-green-500 text-white text-4xl px-8 py-4 rounded-lg hover:bg-green-600 transition duration-300 border-2 border-black md:w-[70%]"
         :class="[ready ? 'bg-green-400 cursor-not-allowed' : 'bg-green-500 hover:bg-green-600']"
       >
-        {{ ready ? "Ready (Waiting for Opponent)" : "Ready" }}
+        {{ ready ? "Ready (Waiting for Opponent)" : "Ready???" }}
       </button>
     </div>
 
@@ -84,19 +84,19 @@
       </div>
 
       <!-- Gameboard Content -->
-      <div class="flex space-x-4 mt-4">
+      <div class="flex space-x-4 ml-4 mt-4">
         <!-- Color Choices Grid -->
-        <div class="grid grid-cols-4 gap-2 border-2 border-gray-300 rounded-lg p-2 bg-gray-100">
+        <div class="grid grid-cols-4 gap-2 border-2 border-greynav rounded-xl p-2 ">
           <div
             v-for="(color, index) in colorGrid"
             :key="'color-grid-' + index"
-            class="w-10 h-10 rounded-full"
+            class="w-10 h-10 rounded-full border-2 border-greynav"
             :style="{ backgroundColor: color }"
           ></div>
         </div>
 
         <!-- Pegs Grid -->
-        <div class="grid grid-cols-4 gap-2 border-2 border-gray-300 rounded-lg p-2 bg-gray-100">
+        <div class="grid grid-cols-4 border-2 border-greynav rounded-lg p-1 place-items-center">
           <div
             v-for="(peg, index) in pegsGrid"
             :key="'peg-' + index"
