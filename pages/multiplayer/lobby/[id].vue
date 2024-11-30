@@ -41,6 +41,10 @@
         </button>
       </div>
     </div>
+    <!-- Waiting for Opponent's Result -->
+<div v-if="waitingForResult" class="text-center my-6">
+  <p class="text-2xl font-bold text-gray-700">Waiting for the other player's result...</p>
+</div>
     <!-- Gameboard -->
     <div v-else-if="gameStarted" class="game-board mt-5 flex flex-col bg-purple-300 rounded-lg shadow-md border-2 border-black">
       <!-- Game Header -->
@@ -167,6 +171,7 @@ const ready = ref(false);
 const resultMessage = ref(""); // Message to display for victory/loss
 const timeLeft = ref(null); // Time left for the winner
 const showResultModal = ref(false); // Modal visibility
+const waitingForResult = ref(false); // Indicates if waiting for the opponent's result
 
 // Timer interval reference
 let timerInterval = null;
@@ -366,16 +371,23 @@ onMounted(() => {
   });
 });
 // Emit when the player wins
+
+// Emit when the player finishes
+const emitPlayerFinished = () => {
+  waitingForResult.value = true; // Show waiting message
+};
+// Emit when the player wins
 const emitPlayerWin = () => {
   const timeLeft = gameCountdown.value; // Remaining time
+  emitPlayerFinished(); // Notify the frontend to show the waiting message
   socket.emit("playerWin", {
     matchId: matchId.value,
     timeLeft,
   });
 };
-
 // Emit when the player loses
 const emitPlayerLose = () => {
+  emitPlayerFinished(); // Notify the frontend to show the waiting message
   socket.emit("playerLose", {
     matchId: matchId.value,
   });
@@ -384,7 +396,7 @@ const emitPlayerLose = () => {
 // Listen for the game result from the server
 socket.on("gameResult", (result) => {
   console.log("Game result received:", result); // Debugging
-
+  waitingForResult.value = false; // Stop showing the waiting message
   if (result.winnerId === socket.id) {
     resultMessage.value = `You won! Time left: ${result.timeLeft} seconds`;
     showResultModal.value = true; // Show the result modal
