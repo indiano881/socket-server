@@ -96,13 +96,7 @@
     </button>
   </div>
 </div>
-<div 
-  v-if="energyPowerFired" 
-  class="fixed top-4 right-4 bg-yellow-300 text-black p-4 rounded-lg shadow-lg"
->
-  <p class="font-bold">Energy Boost Active!</p>
-  
-</div>
+
     <!-- Countdown Before Game Starts -->
     <div v-if="isCountdownRunning" class="flex justify-center items-center h-96">
       <h1 class="text-9xl font-bold text-yellow-400">{{ countdown }}</h1>
@@ -242,7 +236,7 @@ const isGameStarted = ref(false);
 const showWinModal = ref(false); // Controls the win modal visibility
 const showLoseModal = ref(false); // Controls the lose modal visibility
 const countdown = ref(3); // Pre-game countdown
-const gameCountdown = ref(100); // In-game countdown
+const gameCountdown = ref(1000); // In-game countdown
 const progress = ref(100); // Progress bar width
 const maxEnergyPoints = 20;
 const energyPoints = ref(3);
@@ -251,11 +245,8 @@ const showHintModal = ref(false); // Controls the visibility of the hint modal
 const hintModal = ref({ color: "", position: 0 }); // Stores the hint information
 
 
-const energyPowerFired=ref(false); //triple enrgy attack
-
-
 // Available colors (8 colors)
-const availableColors = ['red', 'blue', 'green', 'yellow', 'purple', 'orange', 'pink', 'cyan', 'brown'];
+const availableColors = ['red','orange', 'yellow', 'green', 'blue', 'cyan', 'purple', 'pink',  'brown'];
 
 // Initialize a 4x7 grid with white cells
 const colorGrid = ref(Array(28).fill('white'));
