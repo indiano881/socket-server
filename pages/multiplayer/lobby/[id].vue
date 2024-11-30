@@ -21,27 +21,23 @@
     <div v-if="countdown > 0" class="flex justify-center items-center h-96">
       <h1 class="text-9xl font-bold text-yellow-400">{{ countdown }}</h1>
     </div>
-<!-- Win Modal -->
+<!-- Result Modal -->
 <div 
-      v-if="showWinModal" 
+      v-if="showResultModal" 
       class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
     >
       <div class="bg-white p-6 rounded-lg shadow-lg text-center">
-        <h1 class="text-4xl font-bold text-green-600">You Win!</h1>
-        <div class="flex justify-center space-x-2 mt-4">
-          <div 
-            v-for="(color, index) in secretCombination" 
-            :key="'secret-' + index" 
-            class="w-10 h-10 rounded-full"
-            :style="{ backgroundColor: color }"
-          ></div>
-        </div>
-        <p class="text-xl mt-4 text-gray-900">Time left: <span class="font-bold">{{ gameCountdown }} seconds</span></p>
+        <h1 class="text-4xl font-bold" :class="resultMessage.includes('won') ? 'text-green-600' : 'text-red-600'">
+          {{ resultMessage }}
+        </h1>
+        <p v-if="timeLeft" class="text-xl mt-4 text-gray-900">
+          Time left: <span class="font-bold">{{ timeLeft }} seconds</span>
+        </p>
         <button 
-          class="bg-green-500 text-white px-6 py-2 rounded-lg mt-4 hover:bg-green-600"
-          @click="restartGame"
+          class="bg-blue-500 text-white px-6 py-2 rounded-lg mt-4 hover:bg-blue-600"
+          @click="showResultModal = false"
         >
-          Back to lobby
+          Close
         </button>
       </div>
     </div>
@@ -163,11 +159,15 @@ const loading = ref(true);
 const countdown = ref(0);
 const gameStarted = ref(false);
 const gameCountdown = ref(100); // In-game countdown
-const showWinModal = ref(false); // Controls the win modal visibility
+
 const errorMessage = ref("");
 const secretCombination = ref(null); // Store the secret combination
 const selectedCharacter = ref(null);
 const ready = ref(false);
+const resultMessage = ref(""); // Message to display for victory/loss
+const timeLeft = ref(null); // Time left for the winner
+const showResultModal = ref(false); // Modal visibility
+
 // Timer interval reference
 let timerInterval = null;
 // Available colors (8 colors)
@@ -271,14 +271,16 @@ const checkRowMatch = () => {
   // Check if all pegs in this row are green (win condition)
   if (feedbackPegs.every((peg) => peg === "green")) {
     clearInterval(timerInterval); // Stop the timer
-    showWinModal.value = true; // Show the win modal
+    //showWinModal.value = true; // Show the win modal
+    emitPlayerWin(); // Notify the server
     return;
   }
 
   // Move to the next row or trigger loss if out of attempts
   currentRow.value += 1;
   if (currentRow.value >= 7) {
-    handleLoss();
+    emitPlayerLose(); // Notify the server
+    //handleLoss();
   }
 };
 
@@ -363,7 +365,34 @@ onMounted(() => {
     ready.value = false;
   });
 });
+// Emit when the player wins
+const emitPlayerWin = () => {
+  const timeLeft = gameCountdown.value; // Remaining time
+  socket.emit("playerWin", {
+    matchId: matchId.value,
+    timeLeft,
+  });
+};
 
+// Emit when the player loses
+const emitPlayerLose = () => {
+  socket.emit("playerLose", {
+    matchId: matchId.value,
+  });
+};
+
+// Listen for the game result from the server
+socket.on("gameResult", (result) => {
+  console.log("Game result received:", result); // Debugging
+
+  if (result.winnerId === socket.id) {
+    resultMessage.value = `You won! Time left: ${result.timeLeft} seconds`;
+    showResultModal.value = true; // Show the result modal
+  } else {
+    resultMessage.value = `You lost. Opponent had ${result.timeLeft} seconds left.`;
+    showResultModal.value = true; // Show the result modal
+  }
+});
 onUnmounted(() => {
   socket.disconnect();
 });
