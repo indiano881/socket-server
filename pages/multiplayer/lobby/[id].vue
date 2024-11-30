@@ -84,7 +84,7 @@
       </div>
 
       <!-- Gameboard Content -->
-      <div class="flex space-x-4 ml-4 mt-4">
+      <div class="flex space-x-4 ml-4 mt-4 justify-around">
         <!-- Color Choices Grid -->
         <div class="grid grid-cols-4 gap-2 border-2 border-greynav rounded-xl p-2 ">
           <div
@@ -109,7 +109,7 @@
       <!-- Buttons Container -->
       <div class="flex justify-evenly mt-4">
         <!-- Character Power Buttons -->
-        <div v-if="selectedCharacter" class="flex flex-col items-center justify-around">
+        <div v-if="selectedCharacter" class="flex flex-col w-[25%] items-center justify-around">
           <button
             v-if="selectedCharacter.powerImg1"
             :disabled="energyPoints < 3"
@@ -131,11 +131,11 @@
         </div>
 
         <!-- Buttons for Selecting Colors -->
-        <div class="grid grid-cols-3 gap-2">
+        <div class="grid grid-cols-3 gap-2 mt-2 w-[65%]">
           <button
             v-for="(color, index) in availableColors"
             :key="'button-' + index"
-            class="w-12 h-12 rounded-full shadow-md focus:outline-none hover:ring-2 hover:ring-gray-500 transition border-2 border-black"
+            class="w-12 h-12 rounded-full min-w-[75px] focus:outline-none hover:ring-2 hover:ring-greynav transition border-2 border-greynav"
             :style="{ backgroundColor: color }"
             @click="addColorToGrid(color)"
           ></button>
