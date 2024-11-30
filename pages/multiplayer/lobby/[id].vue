@@ -117,7 +117,7 @@
             class="flex items-center justify-center w-20 h-20 bg-white border-2 border-black rounded-full hover:bg-gray-300 transition"
             @click="applyPower(selectedCharacter.powerName1)"
           >
-            <img :src="selectedCharacter.powerImg1" alt="Power 1" class="w-16 h-16" />
+            <img :src="selectedCharacter.powerImg1" alt="Power 1" class="w-20 h-20" />
           </button>
           <button
             v-if="selectedCharacter.powerImg2"
@@ -126,7 +126,7 @@
             class="flex items-center justify-center w-20 h-20 bg-white border-2 border-black rounded-full hover:bg-gray-300 transition"
             @click="applyPower(selectedCharacter.powerName2)"
           >
-            <img :src="selectedCharacter.powerImg2" alt="Power 2" class="w-16 h-16" />
+            <img :src="selectedCharacter.powerImg2" alt="Power 2" class="w-20 h-20" />
           </button>
         </div>
 
