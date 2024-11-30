@@ -1,22 +1,22 @@
 <template>
     <div class="tournament px-4 py-8 max-w-5xl mx-auto">
       <h1 class="text-4xl font-bold mb-6 text-center text-white">Game Modes</h1>
-      <p class="text-gray-900 text-center mb-8 text-lg">
+      <p class="text-gray-900 text-center mb-8 text-xl font-semibold">
         Select a mode to compete with other players!
       </p>
   
       <!-- Game Mode Selection -->
       <div class="flex items-center justify-evenly mb-12">
         <div
-          class="p-6 bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition"
+          class="p-6 bg-white rounded-xl border-2 border-greynav"
         >
-          <h2 class="text-2xl font-semibold mb-4 text-gray-800">1 vs 1</h2>
-          <p class="text-gray-600 mb-6">
+          <h2 class="text-2xl font-semibold mb-4 text-gray-900">1 vs 1</h2>
+          <p class="text-gray-700 mb-6">
             Challenge another player to a quick match.
           </p>
           <button
             @click="registerMatch"
-            class="w-full bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded"
+            class="w-full bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-xl border-2 border-greynav"
           >
             Create Match
           </button>
@@ -24,15 +24,15 @@
       </div>
   
       <!-- Display All Matches -->
-      <div v-if="matches.length" class="matches-list bg-gray-100 p-6 rounded-lg shadow-md mt-8">
-        <h2 class="text-2xl font-semibold text-center text-gray-800 mb-4">
+      <div v-if="matches.length" class="flex flex-col bg-white p-6 rounded-xl border-2 border-greynav mt-8">
+        <h2 class="text-2xl font-semibold text-center text-gray-900 mb-4">
           All Matches
         </h2>
         <ul>
           <li
             v-for="match in matches"
             :key="match.id"
-            class="match-item border-b border-gray-300 py-2"
+            class=" flex flex-col bg-purple-300 border-2 border-greynav py-2 rounded-xl my-4 p-4"
           >
             <p><strong>ID:</strong> {{ match.id }}</p>
             <p><strong>Players:</strong> {{ match.player_count }}/2</p>
@@ -40,7 +40,7 @@
             <button
               v-if="match.player_count < 2 && match.status === 'Waiting for players'"
               @click="joinMatch(match.id)"
-              class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded mt-2"
+              class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-xl border-2 border-greynav mt-2"
             >
               Join Match
             </button>
@@ -50,7 +50,7 @@
           </li>
         </ul>
       </div>
-      <div v-else class="text-center text-gray-600">
+      <div v-else class="text-center text-gray-700">
         No matches created yet.
       </div>
     </div>

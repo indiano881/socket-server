@@ -1,11 +1,16 @@
 <template>
   <div class="p-2 max-w-5xl mx-auto bg-white rounded-xl shadow-md space-y-6 my-4 border-4 border-greynav">
-    <h1 class="text-4xl font-bold">Match ID: {{ matchId }}</h1>
-    <p v-if="loading" class="text-lg">The game is loading...</p>
+    <h1 class="text-xl font-bold">Match ID: {{ matchId }}</h1>
+    <p v-if="loading" class="text-xl font-bold text-center text-green-600">The game is loading...</p>
     <p v-else-if="errorMessage" class="text-red-500">{{ errorMessage }}</p>
 
     <!-- Character Selection -->
     <div v-if="!ready && !gameStarted" class="flex flex-col items-center">
+      <h1 
+      class="text-4xl font-bold text-gray-900 text-center mb-4"
+    >
+      Choose your character
+    </h1>
       <CharacterSelection @characterSelected="handleCharacterSelection" />
       <button
         @click="markReady"

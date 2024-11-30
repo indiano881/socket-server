@@ -53,7 +53,7 @@
     <!-- Title: Hide during countdown and gameboard -->
     <h1 
       v-if="!isCountdownRunning && !isGameStarted" 
-      class="text-4xl font-bold text-gray-800 text-center"
+      class="text-4xl font-bold text-gray-900 text-center"
     >
       Choose your character
     </h1>
