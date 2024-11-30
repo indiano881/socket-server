@@ -142,9 +142,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Waiting for Another Player -->
-    <p v-else class="text-lg">Waiting for another player to join...</p>
   </div>
 </template>
 
@@ -175,17 +172,7 @@ const waitingForResult = ref(false); // Indicates if waiting for the opponent's 
 // Timer interval reference
 let timerInterval = null;
 // Available colors (8 colors)
-const availableColors = [
-  "red",
-  "blue",
-  "green",
-  "yellow",
-  "purple",
-  "orange",
-  "pink",
-  "cyan",
-  "brown",
-];
+const availableColors = ['red','orange', 'yellow', 'green', 'blue', 'cyan', 'purple', 'pink',  'brown'];
 
 // Energy points
 const maxEnergyPoints = 20;
@@ -285,7 +272,7 @@ const checkRowMatch = () => {
 };
 
 const startGameCountdown = () => {
-  const totalGameTime = 20;
+  const totalGameTime = 1000;
   gameCountdown.value = totalGameTime;
 
   timerInterval = setInterval(() => {
