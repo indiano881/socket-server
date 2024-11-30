@@ -118,46 +118,32 @@ io.on('connection', (socket) => {
         }
     });
 
-    // Declare winner and notify players
-    const declareWinner = (matchId) => {
-        const match = matches[matchId];
-        const [player1, player2] = match.players;
-        const result1 = match.results[player1];
-        const result2 = match.results[player2];
+   // Declare winner or handle a draw
+const declareWinner = (matchId) => {
+    const match = matches[matchId];
+    const [player1, player2] = match.players;
+    const result1 = match.results[player1];
+    const result2 = match.results[player2];
 
-        let winnerId, loserId, winnerTimeLeft;
-
-        if (result1.timeLeft > result2.timeLeft) {
-            winnerId = player1;
-            loserId = player2;
-            winnerTimeLeft = result1.timeLeft;
-        } else if (result2.timeLeft > result1.timeLeft) {
-            winnerId = player2;
-            loserId = player1;
-            winnerTimeLeft = result2.timeLeft;
-        }
-
-        // Notify both players
-        if (winnerId) {
-            io.to(winnerId).emit('gameResult', {
-                winnerId,
-                timeLeft: winnerTimeLeft,
-                message: 'You won!',
-            });
-            io.to(loserId).emit('gameResult', {
-                winnerId,
-                timeLeft: winnerTimeLeft,
-                message: `You lost. Opponent had ${winnerTimeLeft} seconds left.`,
-            });
+    if (result1 && result2) {
+        if (result1.timeLeft > 0 && result1.timeLeft > result2.timeLeft) {
+            // Player 1 wins
+            io.to(player1).emit("gameResult", { winnerId: player1, timeLeft: result1.timeLeft });
+            io.to(player2).emit("gameResult", { winnerId: player1, timeLeft: result1.timeLeft });
+        } else if (result2.timeLeft > 0 && result2.timeLeft > result1.timeLeft) {
+            // Player 2 wins
+            io.to(player1).emit("gameResult", { winnerId: player2, timeLeft: result2.timeLeft });
+            io.to(player2).emit("gameResult", { winnerId: player2, timeLeft: result2.timeLeft });
         } else {
-            // It's a draw
-            io.to(player1).emit('gameResult', { message: 'It\'s a draw!' });
-            io.to(player2).emit('gameResult', { message: 'It\'s a draw!' });
+            // Neither player won
+            io.to(player1).emit("gameResult", { winnerId: null, message: "noOneFoundCode" });
+            io.to(player2).emit("gameResult", { winnerId: null, message: "noOneFoundCode" });
         }
+    }
 
-        // Clean up match data
-        delete matches[matchId];
-    };
+    // Clean up match data
+    delete matches[matchId];
+};
 
     // Handle player disconnecting
     socket.on('disconnect', () => {

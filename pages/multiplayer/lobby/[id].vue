@@ -162,8 +162,7 @@ const matchId = ref("");
 const loading = ref(true);
 const countdown = ref(0);
 const gameStarted = ref(false);
-const gameCountdown = ref(100); // In-game countdown
-
+const gameCountdown = ref(20); // In-game countdown
 const errorMessage = ref("");
 const secretCombination = ref(null); // Store the secret combination
 const selectedCharacter = ref(null);
@@ -231,11 +230,7 @@ const addEnergyPoints = (pointsToAdd) => {
   energyPoints.value = Math.min(energyPoints.value + pointsToAdd, maxEnergyPoints);
 };
 
-// Handle loss
-const handleLoss = () => {
-  clearInterval(timerInterval); // Stop the timer
-  showLoseModal.value = true; // Show the lose modal
-};
+
 
 // Check if the current row matches the secret combination
 const checkRowMatch = () => {
@@ -290,14 +285,14 @@ const checkRowMatch = () => {
 };
 
 const startGameCountdown = () => {
-  const totalGameTime = 100;
+  const totalGameTime = 20;
   gameCountdown.value = totalGameTime;
 
   timerInterval = setInterval(() => {
     gameCountdown.value -= 1;
     if (gameCountdown.value <= 0) {
       clearInterval(timerInterval); // Stop the timer when it reaches 0
-      handleLoss(); // Handle game loss when the timer ends
+      emitPlayerLose();
     }
   }, 1000); // Decrease every second
 };
@@ -393,17 +388,19 @@ const emitPlayerLose = () => {
   });
 };
 
-// Listen for the game result from the server
 socket.on("gameResult", (result) => {
   console.log("Game result received:", result); // Debugging
   waitingForResult.value = false; // Stop showing the waiting message
-  if (result.winnerId === socket.id) {
+
+  if (result.message === "noOneFoundCode") {
+    resultMessage.value = "No one found the correct code.";
+  } else if (result.winnerId === socket.id) {
     resultMessage.value = `You won! Time left: ${result.timeLeft} seconds`;
-    showResultModal.value = true; // Show the result modal
   } else {
     resultMessage.value = `You lost. Opponent had ${result.timeLeft} seconds left.`;
-    showResultModal.value = true; // Show the result modal
   }
+
+  showResultModal.value = true; // Show the result modal
 });
 onUnmounted(() => {
   socket.disconnect();
