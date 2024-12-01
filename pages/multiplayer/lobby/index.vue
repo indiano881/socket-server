@@ -11,7 +11,7 @@
           class="p-6 bg-white rounded-xl border-2 border-greynav"
         >
           <h2 class="text-2xl font-semibold mb-4 text-gray-900">1 vs 1</h2>
-          <p class="text-gray-700 mb-6">
+          <p class="text-gray-900 mb-6">
             Challenge another player to a quick match.
           </p>
           <button
@@ -34,9 +34,9 @@
             :key="match.id"
             class=" flex flex-col bg-purple-300 border-2 border-greynav py-2 rounded-xl my-4 p-4"
           >
-            <p><strong>ID:</strong> {{ match.id }}</p>
-            <p><strong>Players:</strong> {{ match.player_count }}/2</p>
-            <p><strong>Status:</strong> {{ match.status }}</p>
+            <p class="text-gray-900"><strong>ID:</strong> {{ match.id }}</p>
+            <p class="text-gray-900"><strong>Players:</strong> {{ match.player_count }}/2</p>
+            <p class="text-gray-900"><strong>Status:</strong> {{ match.status }}</p>
             <button
               v-if="match.player_count < 2 && match.status === 'Waiting for players'"
               @click="joinMatch(match.id)"

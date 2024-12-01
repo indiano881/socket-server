@@ -1,6 +1,6 @@
 <template>
   <div class="p-2 max-w-5xl mx-auto bg-white rounded-xl shadow-md space-y-6 my-4 border-4 border-greynav">
-    <h1 class="text-xl font-bold">Match ID: {{ matchId }}</h1>
+    <h1 class="text-xl font-bold text-gray-900">Match ID: {{ matchId }}</h1>
     <p v-if="loading" class="text-xl font-bold text-center text-green-600">The game is loading...</p>
     <p v-else-if="errorMessage" class="text-red-500">{{ errorMessage }}</p>
 
