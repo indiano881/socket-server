@@ -26,7 +26,6 @@ function generateSecretCode(length = 4) {
     return secretCode;
 }
 
-// Handle socket connection
 io.on('connection', (socket) => {
     console.log('A user connected:', socket.id);
 
@@ -35,9 +34,9 @@ io.on('connection', (socket) => {
         if (!matches[matchId]) {
             matches[matchId] = {
                 players: [],
-                code: generateSecretCode(), // Generate a random secret code
-                readyPlayers: 0, // Track how many players are ready
-                results: {}, // Store results for players
+                code: generateSecretCode(),
+                readyPlayers: 0,
+                results: {},
             };
         }
 
@@ -48,15 +47,13 @@ io.on('connection', (socket) => {
             socket.join(matchId);
             console.log(`Player joined match ${matchId}:`, match.players);
 
-            // Notify all players of the current match status
             io.to(matchId).emit('playerJoined', { players: match.players.length });
 
-            // If two players have joined, wait for readiness
             if (match.players.length === 2) {
-                io.to(matchId).emit('waitingForReady'); // Notify players to get ready
+                io.to(matchId).emit('waitingForReady');
             }
         } else {
-            socket.emit('matchFull', matchId); // Notify player that match is full
+            socket.emit('matchFull', matchId);
         }
     });
 
@@ -67,26 +64,40 @@ io.on('connection', (socket) => {
         if (match && match.players.includes(socket.id)) {
             match.readyPlayers += 1;
             console.log(`Player ${socket.id} is ready in match ${matchId} with character ${characterId}`);
-
-            // Notify other players that this player is ready
             socket.to(matchId).emit('opponentReady', { characterId });
 
-            // If both players are ready, start the game
             if (match.readyPlayers === 2) {
-                io.to(matchId).emit('bothPlayersReady', match.code); // Notify clients that both players are ready
+                io.to(matchId).emit('bothPlayersReady', match.code);
 
-                // Start the countdown
-                let countdown = 10; // Countdown duration in seconds
+                let countdown = 10;
                 const countdownInterval = setInterval(() => {
                     if (countdown > 0) {
-                        io.to(matchId).emit('countdown', countdown); // Send countdown updates
+                        io.to(matchId).emit('countdown', countdown);
                         countdown--;
                     } else {
-                        clearInterval(countdownInterval); // Stop the countdown
-                        io.to(matchId).emit('gameStart', { code: match.code }); // Notify clients that the game has started
+                        clearInterval(countdownInterval);
+                        io.to(matchId).emit('gameStart', { code: match.code });
                     }
                 }, 1000);
             }
+        }
+    });
+
+    // Handle Mist of Madness power
+    socket.on('mistOfMadness', ({ matchId }) => {
+        const match = matches[matchId];
+
+        if (match) {
+            const opponentSocketId = match.players.find((id) => id !== socket.id);
+
+            if (opponentSocketId) {
+                io.to(opponentSocketId).emit('applyMistOfMadness');
+                console.log(`Mist of Madness applied to player ${opponentSocketId} in match ${matchId}`);
+            } else {
+                console.error(`No opponent found for player ${socket.id} in match ${matchId}`);
+            }
+        } else {
+            console.error(`Match ${matchId} not found.`);
         }
     });
 
@@ -97,7 +108,6 @@ io.on('connection', (socket) => {
         if (match) {
             match.results[socket.id] = { timeLeft, status: 'win' };
 
-            // Check if both players have finished
             if (Object.keys(match.results).length === 2) {
                 declareWinner(matchId);
             }
@@ -111,45 +121,16 @@ io.on('connection', (socket) => {
         if (match) {
             match.results[socket.id] = { timeLeft: 0, status: 'lose' };
 
-            // Check if both players have finished
             if (Object.keys(match.results).length === 2) {
                 declareWinner(matchId);
             }
         }
     });
 
-   // Declare winner or handle a draw
-const declareWinner = (matchId) => {
-    const match = matches[matchId];
-    const [player1, player2] = match.players;
-    const result1 = match.results[player1];
-    const result2 = match.results[player2];
-
-    if (result1 && result2) {
-        if (result1.timeLeft > 0 && result1.timeLeft > result2.timeLeft) {
-            // Player 1 wins
-            io.to(player1).emit("gameResult", { winnerId: player1, timeLeft: result1.timeLeft });
-            io.to(player2).emit("gameResult", { winnerId: player1, timeLeft: result1.timeLeft });
-        } else if (result2.timeLeft > 0 && result2.timeLeft > result1.timeLeft) {
-            // Player 2 wins
-            io.to(player1).emit("gameResult", { winnerId: player2, timeLeft: result2.timeLeft });
-            io.to(player2).emit("gameResult", { winnerId: player2, timeLeft: result2.timeLeft });
-        } else {
-            // Neither player won
-            io.to(player1).emit("gameResult", { winnerId: null, message: "noOneFoundCode" });
-            io.to(player2).emit("gameResult", { winnerId: null, message: "noOneFoundCode" });
-        }
-    }
-
-    // Clean up match data
-    delete matches[matchId];
-};
-
-    // Handle player disconnecting
+    // Handle player disconnect
     socket.on('disconnect', () => {
         console.log('A user disconnected:', socket.id);
 
-        // Iterate through matches to remove the player
         for (const matchId in matches) {
             const match = matches[matchId];
             const playerIndex = match.players.indexOf(socket.id);
@@ -158,12 +139,10 @@ const declareWinner = (matchId) => {
                 match.players.splice(playerIndex, 1);
                 console.log(`Player ${socket.id} left match ${matchId}`);
 
-                // If the match is empty, delete it
                 if (match.players.length === 0) {
                     delete matches[matchId];
                     console.log(`Match ${matchId} deleted`);
                 } else {
-                    // Notify remaining player that opponent left
                     io.to(matchId).emit('opponentLeft');
                 }
                 break;
@@ -171,6 +150,7 @@ const declareWinner = (matchId) => {
         }
     });
 });
+
 
 // Start the server
 const PORT = 4000;

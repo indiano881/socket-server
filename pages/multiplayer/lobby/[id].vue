@@ -363,10 +363,11 @@ const applyPower = (powerName) => {
   break;
   case "Mist of Madness":
   if (energyPoints.value >= 3) {
-    isGreyscale.value = true;
+    socket.emit("mistOfMadness", { matchId: matchId.value });
+    /*isGreyscale.value = true;
     setTimeout(() => {
       isGreyscale.value = false;
-    }, 5000);
+    }, 5000);*/
 
     deductEnergyPoints(3);
   } else {
@@ -433,6 +434,12 @@ onMounted(() => {
       }
     }, 1000);
   }
+  socket.on("applyMistOfMadness", () => {
+  isGreyscale.value = true;
+  setTimeout(() => {
+    isGreyscale.value = false;
+  }, 5000); // Reset after 5 seconds
+});
 });
 
   socket.on("matchFull", () => {
