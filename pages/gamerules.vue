@@ -3,7 +3,7 @@
     <!-- Toggle Button -->
     <div class="text-center">
       <button 
-        class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition duration-300"
+       class="bg-blue-500 text-white text-xl px-8 py-4 rounded-lg hover:bg-blue-600 transition duration-300 border-2 border-black text-center md:text-4xl md:w-[70%]"
         @click="toggleView"
       >
         {{ showGameRules ? 'View Characters' : 'View Game Rules' }}
