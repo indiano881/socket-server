@@ -86,9 +86,9 @@ export const Characters: CharacterType[] = [
     description: "Jigsaw, or John Kramer, is the mastermind behind the twisted games in the Saw series, testing people's will to survive.",
     powers: [
       {
-        name: "Time control",
-        description: "Heris able to add 5 seconds extra to the countdown",
-        image: "/images/powers/five-plus.svg"
+        name: "Mist of Madness",
+        description: "Tricks your mind and seight for 5 seconds",
+        image: "/images/powers/mist2.svg"
       },
       {
         name: "Detective mode",

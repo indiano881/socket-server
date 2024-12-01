@@ -109,13 +109,14 @@
       </div>
 
       <!-- Gameboard Content -->
-      <div class="flex space-x-4 ml-4 mt-4 justify-around">
+      <div :class="[{ 'grayscale': isGreyscale }, 'flex space-x-4 ml-4 mt-4 justify-around']">
+
         <!-- Color Choices Grid -->
         <div class="grid grid-cols-4 gap-2 border-2 border-greynav rounded-xl p-2 ">
           <div
             v-for="(color, index) in colorGrid"
             :key="'color-grid-' + index"
-            class="w-10 h-10 rounded-full border-2 border-greynav"
+            :class="['w-10 h-10 rounded-full border-2 border-greynav', { grayscale: isGreyscale }]"
             :style="{ backgroundColor: color }"
           ></div>
         </div>
@@ -195,6 +196,7 @@ const showResultModal = ref(false); // Modal visibility
 const waitingForResult = ref(false); // Indicates if waiting for the opponent's result
 const showHintModal = ref(false); // Controls the visibility of the hint modal
 const hintModal = ref({ color: "", position: 0 }); // Stores the hint information
+const isGreyscale= ref(false)
 
 // Timer interval reference
 let timerInterval = null;
@@ -359,6 +361,19 @@ const applyPower = (powerName) => {
     console.log("Not enough energy points to use Detective mode.");
   }
   break;
+  case "Mist of Madness":
+  if (energyPoints.value >= 3) {
+    isGreyscale.value = true;
+    setTimeout(() => {
+      isGreyscale.value = false;
+    }, 5000);
+
+    deductEnergyPoints(3);
+  } else {
+    console.log("Not enough energy points to use Mist of Madness.");
+  }
+  break;
+
 
     default:
       console.warn(`No effect defined for power: ${powerImage.name}`);
@@ -474,4 +489,9 @@ onUnmounted(() => {
   socket.disconnect();
 });
 </script>
+<style>
+.grayscale {
+  filter: grayscale(100%);
+}
+</style>
 
