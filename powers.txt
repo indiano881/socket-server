@@ -51,3 +51,8 @@ Super Speed
 Speed Force Manipulation
 "Undo your last move and reattempt the same row without penalty."
 (Visualize a glowing rewind effect over the puzzle board.)
+
+
+//AGRESSIVE POWERS
+block for 7 seconds opponents POWERS
+eye of color
