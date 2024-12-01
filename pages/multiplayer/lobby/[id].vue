@@ -46,6 +46,26 @@
         </button>
       </div>
     </div>
+    <div 
+  v-if="showHintModal" 
+  class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
+>
+  <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+    <h1 class="text-4xl font-bold text-blue-600">Hint</h1>
+    <p class="text-xl mt-4 text-gray-900">
+      A color in the secret combination is 
+      <span class="font-bold" :style="{ color: hintModal.color }">{{ hintModal.color }}</span> 
+      at position 
+      <span class="font-bold">{{ hintModal.position }}</span>.
+    </p>
+    <button 
+      class="bg-blue-500 text-white px-6 py-2 rounded-lg mt-4 hover:bg-blue-600"
+      @click="showHintModal = false"
+    >
+      Close
+    </button>
+  </div>
+  </div>
     <!-- Waiting for Opponent's Result -->
 <div v-if="waitingForResult" class="text-center my-6">
   <p class="text-2xl font-bold text-gray-700">Waiting for the other player's result...</p>
@@ -173,6 +193,8 @@ const resultMessage = ref(""); // Message to display for victory/loss
 const timeLeft = ref(null); // Time left for the winner
 const showResultModal = ref(false); // Modal visibility
 const waitingForResult = ref(false); // Indicates if waiting for the opponent's result
+const showHintModal = ref(false); // Controls the visibility of the hint modal
+const hintModal = ref({ color: "", position: 0 }); // Stores the hint information
 
 // Timer interval reference
 let timerInterval = null;
@@ -288,7 +310,61 @@ const startGameCountdown = () => {
     }
   }, 1000); // Decrease every second
 };
+// Apply a power based on the provided image's name
+const applyPower = (powerName) => {
+  if (!powerName) {
+    console.warn("Invalid power image or name.");
+    return;
+  }
 
+  switch (powerName) {
+    case "Time control": // Add small time extension
+      if (energyPoints.value >= 3) {
+        gameCountdown.value = Math.min(gameCountdown.value + 5, 100);
+        deductEnergyPoints(3); // Deduct 3 energy points
+      }
+      break;
+
+      case "Adrenaline Time Boost": // Add random time extension (3 to 10 seconds)
+  if (energyPoints.value >=3) {
+    const randomTime = Math.floor(Math.random() * (10 - 3 + 1)) + 3; // Random number between 3 and 10
+    gameCountdown.value = Math.min(gameCountdown.value + randomTime, 100);
+    deductEnergyPoints(3); // Deduct 5 energy points
+  }
+  break;
+
+  case "Detective mode": // Reveal a random color and position from the secret combination
+  if (energyPoints.value >= 3) {
+    if (secretCombination.value.length > 0) { // Ensure secret combination is not empty
+      const randomIndex = Math.floor(Math.random() * secretCombination.value.length); // Select a valid random index
+      console.log("randomIndex", randomIndex)
+      const randomHint = secretCombination.value[randomIndex];
+      console.log("RandomHint"+ randomHint)
+      if (randomHint) { // Ensure the randomHint is valid
+        hintModal.value = {
+          color: randomHint,
+          position: randomIndex + 1 // Convert to 1-based index for user readability
+        };
+
+        console.log("Hint Color:", randomHint, "Hint Position:", randomIndex + 1);
+        showHintModal.value = true; // Show the modal
+        deductEnergyPoints(3); // Deduct 3 energy points
+      } else {
+        console.error("Random hint is undefined.");
+      }
+    } else {
+      console.error("Secret combination is empty. No hint available.");
+    }
+  } else {
+    console.log("Not enough energy points to use Detective mode.");
+  }
+  break;
+
+    default:
+      console.warn(`No effect defined for power: ${powerImage.name}`);
+      break;
+  }
+};
 // Mark as ready
 const markReady = () => {
   if (selectedCharacter.value) {
