@@ -2,7 +2,7 @@
     <div>
       <button
         @click="logOut"
-        class="bg-yellow-500 n1 text-black hover:bg-yellow-600 transition duration-300 font font-semibold rounded-xl border-2 border-white px-2"
+        class="bg-yellow-500  text-black hover:bg-yellow-600 transition duration-300  rounded-xl border-2 border-white px-2"
       >
         Log Out
       </button>
