@@ -56,7 +56,29 @@ io.on('connection', (socket) => {
             socket.emit('matchFull', matchId);
         }
     });
+// Declare winner or handle a draw
+const declareWinner = (matchId) => {
+    const match = matches[matchId];
+    const [player1, player2] = match.players;
+    const result1 = match.results[player1];
+    const result2 = match.results[player2];
 
+    if (result1 && result2) {
+        if (result1.timeLeft > 0 && result1.timeLeft > result2.timeLeft) {
+            // Player 1 wins
+            io.to(player1).emit("gameResult", { winnerId: player1, timeLeft: result1.timeLeft });
+            io.to(player2).emit("gameResult", { winnerId: player1, timeLeft: result1.timeLeft });
+        } else if (result2.timeLeft > 0 && result2.timeLeft > result1.timeLeft) {
+            // Player 2 wins
+            io.to(player1).emit("gameResult", { winnerId: player2, timeLeft: result2.timeLeft });
+            io.to(player2).emit("gameResult", { winnerId: player2, timeLeft: result2.timeLeft });
+        } else {
+            // Neither player won
+            io.to(player1).emit("gameResult", { winnerId: null, message: "noOneFoundCode" });
+            io.to(player2).emit("gameResult", { winnerId: null, message: "noOneFoundCode" });
+        }
+    }
+};
     // Handle player ready
     socket.on('playerReady', ({ matchId, characterId }) => {
         const match = matches[matchId];
