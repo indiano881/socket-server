@@ -213,7 +213,7 @@ const pegsGrid = ref(Array(ROW_SIZE * TOTAL_ROWS).fill("white"));
 const currentRow = ref(0);
 
 // Initialize socket connection
-const socket = io("http://localhost:4000"); // Replace with your server's URL
+const socket = io("http://localhost:4000"); // Replace with your server's URL//MUST CHECK THIS
 
 // Handle character selection
 const handleCharacterSelection = (character) => {
