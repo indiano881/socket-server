@@ -7,7 +7,7 @@ const httpServer = createServer();
 // Initialize Socket.io
 const io = new Server(httpServer, {
     cors: {
-        origin: process.env.FRONTEND_URL || 'http://localhost:3000', // Your Nuxt app URL
+        origin: process.env.FRONTEND_URL,
         methods: ['GET', 'POST'],
     },
 });
@@ -175,7 +175,7 @@ const declareWinner = (matchId) => {
 
 
 // Start the server
-const PORT = 4000;
+const PORT = process.env.PORT || 4000;
 httpServer.listen(PORT, () => {
     console.log(`Socket.io server is running on http://localhost:${PORT}`);
 });

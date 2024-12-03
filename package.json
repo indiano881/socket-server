@@ -3,32 +3,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "nuxt build",
-    "dev": "nuxt dev",
-    "generate": "nuxt generate",
-    "preview": "nuxt preview",
-    "postinstall": "nuxt prepare",
-    "start:server": "node server/server.js",
-    "start:all": "npm-run-all --parallel dev start:server"
+    "start": "node server.js"
   },
   "dependencies": {
-    "@nuxt/ui": "^2.19.2",
-    "@nuxtjs/supabase": "^1.4.2",
-    "nuxt": "^3.14.159",
-    "pug": "^3.0.3",
-    "pug-plain-loader": "^1.1.0",
     "socket.io": "^4.8.1",
-    "socket.io-client": "^4.8.1",
-    "vue": "latest",
-    "vue-router": "latest"
-  },
-  "devDependencies": {
-    "@types/node": "^22.9.0",
-    "@vue/cli-plugin-typescript": "^5.0.8",
-    "autoprefixer": "^10.4.20",
-    "npm-run-all": "^4.1.5",
-    "postcss": "^8.4.47",
-    "tailwindcss": "^3.4.14",
-    "typescript": "^5.6.3"
+    "socket.io-client": "^4.8.1"
+    
   }
 }
