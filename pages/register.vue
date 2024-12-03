@@ -78,7 +78,7 @@ const signUp = async () => {
         data: {
           full_name: userName.value,
         },
-        emailRedirectTo: 'http://localhost:3000/', // Change this for deployment
+        emailRedirectTo: 'https://nuxtermind.vercel.app/', // Change this for deployment
       },
     })
 
