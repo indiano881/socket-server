@@ -7,16 +7,16 @@ const httpServer = createServer();
 // Initialize Socket.io
 const io = new Server(httpServer, {
     cors: {
-        origin: process.env.FRONTEND_URL,
+        origin: 'http://localhost:3000', // Your Nuxt app URL
         methods: ['GET', 'POST'],
     },
 });
 
 const matches = {}; // Store match data in-memory
-const availableColors = ['red', 'blue', 'green', 'yellow', 'purple', 'orange', 'pink', 'cyan', 'brown'];
+const availableColors = ['darkred','red','orange', 'yellow', 'darkgreen', 'lightgreen' ,'blue', 'darkcyan', 'cyan','purple', 'pink'];
 
 // Helper function to generate a random secret code
-function generateSecretCode(length = 4) {
+function generateSecretCode(length = 5) {
     const secretCode = [];
     for (let i = 0; i < length; i++) {
         const randomIndex = Math.floor(Math.random() * availableColors.length);
@@ -56,29 +56,29 @@ io.on('connection', (socket) => {
             socket.emit('matchFull', matchId);
         }
     });
-// Declare winner or handle a draw
-const declareWinner = (matchId) => {
-    const match = matches[matchId];
-    const [player1, player2] = match.players;
-    const result1 = match.results[player1];
-    const result2 = match.results[player2];
+    // Declare winner or handle a draw
+    const declareWinner = (matchId) => {
+        const match = matches[matchId];
+        const [player1, player2] = match.players;
+        const result1 = match.results[player1];
+        const result2 = match.results[player2];
 
-    if (result1 && result2) {
-        if (result1.timeLeft > 0 && result1.timeLeft > result2.timeLeft) {
-            // Player 1 wins
-            io.to(player1).emit("gameResult", { winnerId: player1, timeLeft: result1.timeLeft });
-            io.to(player2).emit("gameResult", { winnerId: player1, timeLeft: result1.timeLeft });
-        } else if (result2.timeLeft > 0 && result2.timeLeft > result1.timeLeft) {
-            // Player 2 wins
-            io.to(player1).emit("gameResult", { winnerId: player2, timeLeft: result2.timeLeft });
-            io.to(player2).emit("gameResult", { winnerId: player2, timeLeft: result2.timeLeft });
-        } else {
-            // Neither player won
-            io.to(player1).emit("gameResult", { winnerId: null, message: "noOneFoundCode" });
-            io.to(player2).emit("gameResult", { winnerId: null, message: "noOneFoundCode" });
+        if (result1 && result2) {
+            if (result1.timeLeft > 0 && result1.timeLeft > result2.timeLeft) {
+                // Player 1 wins
+                io.to(player1).emit("gameResult", { winnerId: player1, timeLeft: result1.timeLeft });
+                io.to(player2).emit("gameResult", { winnerId: player1, timeLeft: result1.timeLeft });
+            } else if (result2.timeLeft > 0 && result2.timeLeft > result1.timeLeft) {
+                // Player 2 wins
+                io.to(player1).emit("gameResult", { winnerId: player2, timeLeft: result2.timeLeft });
+                io.to(player2).emit("gameResult", { winnerId: player2, timeLeft: result2.timeLeft });
+            } else {
+                // Neither player won
+                io.to(player1).emit("gameResult", { winnerId: null, message: "noOneFoundCode" });
+                io.to(player2).emit("gameResult", { winnerId: null, message: "noOneFoundCode" });
+            }
         }
-    }
-};
+    };
     // Handle player ready
     socket.on('playerReady', ({ matchId, characterId }) => {
         const match = matches[matchId];
@@ -115,6 +115,23 @@ const declareWinner = (matchId) => {
             if (opponentSocketId) {
                 io.to(opponentSocketId).emit('applyMistOfMadness');
                 console.log(`Mist of Madness applied to player ${opponentSocketId} in match ${matchId}`);
+            } else {
+                console.error(`No opponent found for player ${socket.id} in match ${matchId}`);
+            }
+        } else {
+            console.error(`Match ${matchId} not found.`);
+        }
+    });
+    // Handle hypnosis power
+    socket.on('hypnosis', ({ matchId }) => {
+        const match = matches[matchId];
+
+        if (match) {
+            const opponentSocketId = match.players.find((id) => id !== socket.id);
+
+            if (opponentSocketId) {
+                io.to(opponentSocketId).emit('applyHypnosis');
+                console.log(`Hypnosis applied to player ${opponentSocketId} in match ${matchId}`);
             } else {
                 console.error(`No opponent found for player ${socket.id} in match ${matchId}`);
             }
@@ -175,7 +192,7 @@ const declareWinner = (matchId) => {
 
 
 // Start the server
-const PORT = process.env.PORT || 4000;
+const PORT = 4000;
 httpServer.listen(PORT, () => {
     console.log(`Socket.io server is running on http://localhost:${PORT}`);
 });
