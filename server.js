@@ -139,6 +139,23 @@ io.on('connection', (socket) => {
             console.error(`Match ${matchId} not found.`);
         }
     });
+    // Handle hypnosis power
+    socket.on('flipTheTable', ({ matchId }) => {
+        const match = matches[matchId];
+
+        if (match) {
+            const opponentSocketId = match.players.find((id) => id !== socket.id);
+
+            if (opponentSocketId) {
+                io.to(opponentSocketId).emit('applyFlipTheTable');
+                console.log(`Flip the table applied to player ${opponentSocketId} in match ${matchId}`);
+            } else {
+                console.error(`No opponent found for player ${socket.id} in match ${matchId}`);
+            }
+        } else {
+            console.error(`Match ${matchId} not found.`);
+        }
+    });
 
     // Handle player win
     socket.on('playerWin', ({ matchId, timeLeft }) => {
