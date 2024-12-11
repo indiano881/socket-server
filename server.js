@@ -13,7 +13,7 @@ const io = new Server(httpServer, {
 });
 
 const matches = {}; // Store match data in-memory
-const availableColors = ['darkred', 'red', 'orange', 'yellow', 'darkgreen', 'lightgreen', 'blue', 'darkcyan', 'cyan', 'purple', 'pink'];
+const availableColors = ['darkred', 'red', 'orange', 'yellow', 'darkgreen', 'lightgreen', 'darkblue', 'blue',  'cyan', 'purple', 'pink'];
 
 // Helper function to generate a random secret code
 function generateSecretCode(length = 5) {
