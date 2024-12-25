@@ -7,13 +7,14 @@ const httpServer = createServer();
 // Initialize Socket.io
 const io = new Server(httpServer, {
     cors: {
-        origin: process.env.FRONTEND_URL, 
+        origin: 'http://localhost:3000', // Your Nuxt app URL
         methods: ['GET', 'POST'],
     },
 });
 
 const matches = {}; // Store match data in-memory
-const availableColors = ['darkred', 'red', 'orange', 'yellow', 'darkgreen', 'lightgreen', 'darkblue', 'blue',  'cyan', 'purple', 'pink'];
+const connectedUsers= []
+const availableColors = ['darkred', 'red', 'orange', 'yellow', 'darkgreen', 'lightgreen', 'darkblue', 'blue', 'cyan', 'purple', 'pink'];
 
 // Helper function to generate a random secret code
 function generateSecretCode(length = 5) {
@@ -46,7 +47,39 @@ const setEnergyPoints = (matchId, playerId, newEnergyPoints) => {
 
 io.on('connection', (socket) => {
     console.log('A user connected:', socket.id);
+    // Handle user connection event
+    // Handle user connection event
+    socket.on('userOnline', (data) => {
+        const { full_name } = data;
 
+        // Add username to the array if not already present
+        if (!connectedUsers.includes(full_name)) {
+            connectedUsers.push(full_name);
+        }
+
+        console.log(`Connected Users: ${connectedUsers}`);
+        console.log(`Number of Connected Users: ${connectedUsers.length}`);
+
+        // Broadcast the updated list of connected users to all clients
+        io.emit('updateUsersOnline', { connectedUsers });
+    });
+   // Handle user disconnectionLOBBY
+   // Handle user leaving the lobby
+   socket.on('disconnectedLobby', (data) => {
+     const { full_name } = data;
+ 
+     // Remove the user from connectedUsers
+     const index = connectedUsers.indexOf(full_name);
+     if (index !== -1) {
+       connectedUsers.splice(index, 1);
+     }
+ 
+     console.log(`User ${full_name} has left the lobby. Updated Users: ${connectedUsers}`);
+ 
+     // Broadcast the updated list of connected users
+     io.emit('updateUsersOnline', { connectedUsers });
+   });
+    
     // Handle joining a match
     socket.on('joinMatch', (matchId) => {
         if (!matches[matchId]) {
@@ -227,6 +260,15 @@ io.on('connection', (socket) => {
     // Handle player disconnect
     socket.on('disconnect', () => {
         console.log('A user disconnected:', socket.id);
+        
+        const full_name = connectedUsers[socket.id];
+        console.log(`User disconnected: ${full_name}`);
+        
+        // Notify all clients that the user has disconnected
+        socket.broadcast.emit('userDisconnected', { full_name });
+
+        // Remove user from the connected list
+        delete connectedUsers[socket.id];
 
         for (const matchId in matches) {
             const match = matches[matchId];
@@ -249,7 +291,7 @@ io.on('connection', (socket) => {
 });
 
 // Start the server
-const PORT = process.env.PORT || 4000;
+const PORT = 4000;
 httpServer.listen(PORT, () => {
     console.log(`Socket.io server is running on http://localhost:${PORT}`);
 });
