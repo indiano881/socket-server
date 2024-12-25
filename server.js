@@ -7,7 +7,7 @@ const httpServer = createServer();
 // Initialize Socket.io
 const io = new Server(httpServer, {
     cors: {
-        origin: 'https://nuxtermind.vercel.app', // Your Nuxt app URL
+        origin: process.env.FRONTEND_URL ||'http://localhost:3000', // Your Nuxt app URL
         methods: ['GET', 'POST'],
     },
 });
@@ -291,7 +291,8 @@ io.on('connection', (socket) => {
 });
 
 // Start the server
-const PORT = 4000;
+// Start the server
+const PORT = process.env.PORT || 4000;
 httpServer.listen(PORT, () => {
     console.log(`Socket.io server is running on http://localhost:${PORT}`);
 });
